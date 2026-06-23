@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hydrogen atom · Quantum Visualizer</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="../index.html">Home</a>
+    <a href="../hydrogen/" class="active">Hydrogen atom</a>
+    <span class="soon">Harmonic oscillator · soon</span>
+    <span class="soon">Particle on a sphere · soon</span>
+  </nav>
+
+  <div class="wrap">
+    <h1 class="page-title">Hydrogen atom</h1>
+    <p class="page-sub">
+      The bound-state wavefunctions separate as
+      ψ<sub>nℓm</sub>(r,ϑ,φ) = R<sub>nℓ</sub>(r) · Y<sub>ℓ</sub><sup>m</sup>(ϑ,φ). Choose the quantum
+      numbers — only the physically allowed values are offered: ℓ = 0…n−1 and m = −ℓ…+ℓ. Lengths
+      are in units of the Bohr radius a (a = 1), nuclear charge Z = 1.
+    </p>
+
+    <div class="controls">
+      <div class="qn"><label>principal <span class="var">n</span></label><div class="seg" id="seg-n"></div></div>
+      <div class="qn"><label>angular <span class="var">ℓ</span></label><div class="seg" id="seg-l"></div></div>
+      <div class="qn"><label>magnetic <span class="var">m</span></label><div class="seg" id="seg-m"></div></div>
+      <div class="qn toggle"><label>nodes</label><div class="seg" id="seg-nodes"></div></div>
+    </div>
+
+    <!-- RADIAL -->
+    <div class="card">
+      <h2>Radial part &nbsp;R<sub>nℓ</sub>(r)</h2>
+      <p class="hint">Normalized Laguerre function. Radial nodes: n − ℓ − 1.</p>
+      <div class="eq" id="eq-radial"></div>
+      <p class="eq-note" id="eq-radial-note"></p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">R<sub>nℓ</sub>(r) — amplitude</p><div class="plot" id="plot-R"></div></div>
+        <div><p class="eq-note">P(r) = r²|R<sub>nℓ</sub>|² — radial probability density</p><div class="plot" id="plot-RP"></div></div>
+      </div>
+    </div>
+
+    <!-- ANGULAR -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Angular part &nbsp;Y<sub>ℓ</sub><sup>m</sup>(ϑ,φ)</h2>
+      <p class="hint">Legendre Θ(ϑ) × particle-on-a-ring Φ<sub>m</sub>(φ) — amplitude and probability density |·|².</p>
+      <div class="eq" id="eq-angular"></div>
+
+      <p class="eq-note">Polar plots (z-axis up) — Θ<sub>ℓm</sub>(ϑ) = N<sub>ℓ</sub><sup>m</sup> P<sub>ℓ</sub><sup>m</sup>(cos ϑ)</p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">Θ(ϑ) amplitude — polar</p><div class="plot" id="plot-theta"></div></div>
+        <div><p class="eq-note">|Θ(ϑ)|² density — polar</p><div class="plot" id="plot-theta-den"></div></div>
+      </div>
+
+      <p class="eq-note" style="margin-top:1rem">Cartesian plots — Θ(ϑ) and the ring Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π)</p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">Θ(ϑ) &amp; |Θ(ϑ)|² vs ϑ</p><div class="plot" id="plot-theta-cart"></div></div>
+        <div><p class="eq-note">Φ<sub>m</sub>(φ): Re &amp; Im vs φ</p><div class="plot" id="plot-phi"></div></div>
+      </div>
+    </div>
+
+    <!-- 3D: PROBABILITY DENSITY of the complex orbital -->
+    <div class="card" style="margin-top:1.2rem">
+      <div class="controls" style="margin:0 0 1rem;box-shadow:none;background:transparent;border:none;padding:0">
+        <h2 style="margin:0">Probability density &nbsp;|ψ<sub>nℓm</sub>|² &nbsp;<span class="sub-h">— complex orbital</span></h2>
+        <div class="qn toggle">
+          <label>boundary</label>
+          <input type="range" id="iso-slider" min="50" max="99" value="90" />
+          <span class="var lvl" id="iso-val">90% enclosed</span>
+        </div>
+      </div>
+      <p class="hint" id="dens-note"></p>
+      <p class="eq-note">3D boundary surface of |ψ|² (L̂<sub>z</sub> eigenstate) — axially symmetric about z · drag to rotate</p>
+      <div class="plot cloud" id="plot-dens"></div>
+    </div>
+
+    <!-- 3D: WAVEFUNCTION of the real orbital -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2 style="margin:0 0 .2rem">Wavefunction &nbsp;ψ &nbsp;<span class="sub-h">— real orbital</span></h2>
+      <p class="hint" id="psi-note"></p>
+      <p class="eq-note">3D boundary surface of ψ — blue: ψ&gt;0, red: ψ&lt;0 (same enclosed % as above) · drag to rotate</p>
+      <div class="plot cloud" id="plot-psi"></div>
+    </div>
+
+    <p class="footer">Drag any 3D plot to rotate · scroll to zoom · open the console for normalization self-tests.</p>
+  </div>
+
+  <script type="module" src="hydrogen.js"></script>
+</body>
+</html>

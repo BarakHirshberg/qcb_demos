@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quantum Mechanics Visualizer</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="index.html" class="active">Home</a>
+    <a href="hydrogen/">Hydrogen atom</a>
+    <span class="soon">Harmonic oscillator · soon</span>
+    <span class="soon">Particle on a sphere · soon</span>
+  </nav>
+
+  <div class="wrap">
+    <header class="hero">
+      <h1>Visualizing the <span class="psi">solutions</span> of quantum mechanics</h1>
+      <p>
+        Interactive companions for an undergraduate quantum mechanics course. Pick the quantum
+        numbers, watch the wavefunctions, probability densities, and orbital shapes update in real
+        time. Everything is computed in your browser from the exact analytic eigenfunctions.
+      </p>
+    </header>
+
+    <section class="cards">
+      <a class="app-card" href="hydrogen/">
+        <span class="tag">App 1 · Central potential</span>
+        <h3>Hydrogen atom</h3>
+        <div class="eq" id="eq-h"></div>
+        <p>Radial Laguerre functions <em>R<sub>nℓ</sub>(r)</em>, angular harmonics
+           <em>Y<sub>ℓ</sub><sup>m</sup></em> split into Legendre × ring parts, and the full 3D
+           orbital cloud with a complex ⇄ real-orbital toggle.</p>
+      </a>
+
+      <div class="app-card soon">
+        <span class="tag">App 2 · 1D bound states</span><span class="badge-soon">coming soon</span>
+        <h3>Harmonic oscillator</h3>
+        <div class="eq" id="eq-o"></div>
+        <p>Hermite eigenfunctions drawn on their energy levels inside the parabola, with
+           <em>|ψ<sub>n</sub>|²</em> and the classical probability for the quantum→classical limit.</p>
+      </div>
+
+      <div class="app-card soon">
+        <span class="tag">App 3 · Angular momentum</span><span class="badge-soon">coming soon</span>
+        <h3>Particle on a sphere</h3>
+        <div class="eq" id="eq-s"></div>
+        <p>The spherical-harmonic "balloons" of the rigid rotor, the Θ (Legendre) and Φ (ring)
+           building blocks, and the (2<em>ℓ</em>+1)-fold degenerate energy ladder.</p>
+      </div>
+    </section>
+
+    <p class="footer">
+      Built for teaching · open source · runs entirely client-side. Tip: open the browser
+      console to see the live normalization self-tests.
+    </p>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const r = (id, tex) => katex.render(tex, document.getElementById(id),
+        { displayMode: false, throwOnError: false });
+      r('eq-h', 'R_{n\\ell}(r)\\,Y_\\ell^{\\,m}(\\vartheta,\\varphi)');
+      r('eq-o', '\\psi_n(x)=N_n H_n(x)\\,e^{-x^2/2}');
+      r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m P_\\ell^m(\\cos\\vartheta)\\,e^{im\\varphi}');
+    });
+  </script>
+</body>
+</html>

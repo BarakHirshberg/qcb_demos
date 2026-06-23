@@ -1,0 +1,127 @@
+/* =========================================================================
+   Quantum Mechanics Visualizer — shared styles
+   ========================================================================= */
+:root {
+  --bg:        #0e1116;
+  --bg-soft:   #161b22;
+  --bg-card:   #1b222c;
+  --border:    #2a3340;
+  --text:      #e6edf3;
+  --text-dim:  #9aa7b4;
+  --accent:    #6ea8fe;
+  --accent-2:  #f78fb3;
+  --pos:       #4f8cff;   /* positive lobe / Re */
+  --neg:       #ff6b6b;   /* negative lobe / Im */
+  --shadow:    0 8px 28px rgba(0,0,0,.35);
+  --radius:    14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 80% -10%, #1a2433 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- Top navigation ---- */
+.nav {
+  display: flex; align-items: center; gap: 1.4rem;
+  padding: .85rem 1.6rem;
+  background: rgba(13,17,23,.75);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.nav .brand { font-weight: 700; letter-spacing: .2px; margin-right: .4rem; }
+.nav .brand .psi { color: var(--accent-2); }
+.nav a { color: var(--text-dim); font-size: .95rem; }
+.nav a.active, .nav a:hover { color: var(--text); text-decoration: none; }
+.nav .soon { color: #5b6470; font-size: .95rem; cursor: default; }
+
+.app-card.soon { opacity: .5; cursor: default; }
+.app-card.soon:hover { transform: none; border-color: var(--border); text-decoration: none; }
+.badge-soon { float: right; font-size: .68rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-dim); border: 1px solid var(--border); border-radius: 999px; padding: .12rem .55rem; }
+
+/* ---- Layout containers ---- */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 1.4rem 1.6rem 3rem; }
+.page-title { margin: .4rem 0 .2rem; font-size: 1.6rem; }
+.page-sub { color: var(--text-dim); margin: 0 0 1.2rem; max-width: 70ch; }
+
+/* ---- Quantum-number control bar ---- */
+.controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1.1rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .9rem 1.2rem; box-shadow: var(--shadow);
+  margin-bottom: 1.2rem;
+}
+.qn { display: flex; align-items: center; gap: .55rem; }
+.qn label { color: var(--text-dim); font-size: .92rem; }
+.qn .var { font-style: italic; font-weight: 700; color: var(--text); }
+.seg { display: inline-flex; gap: .28rem; flex-wrap: wrap; }
+.seg button {
+  min-width: 2.1rem; padding: .32rem .55rem;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  font: inherit; font-size: .92rem; cursor: pointer; transition: all .12s ease;
+}
+.seg button:hover { border-color: var(--accent); }
+.seg button.sel { background: var(--accent); border-color: var(--accent); color: #08111f; font-weight: 700; }
+.toggle { margin-left: auto; }
+.qn input[type=range] { accent-color: var(--accent); width: 150px; cursor: pointer; }
+.qn .var.lvl { min-width: 6.5rem; font-style: normal; color: var(--text-dim); font-size: .88rem; }
+
+/* ---- Cards / panels ---- */
+.grid { display: grid; gap: 1.2rem; }
+.grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 920px) { .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.1rem 1.2rem; box-shadow: var(--shadow);
+}
+.card h2 { margin: 0 0 .2rem; font-size: 1.15rem; }
+.sub-h { font-weight: 400; color: var(--text-dim); font-size: .9rem; }
+.card .hint { color: var(--text-dim); font-size: .86rem; margin: 0 0 .7rem; }
+
+/* Equation box */
+.eq {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: .7rem .8rem; margin: .2rem 0 .9rem;
+  overflow-x: auto; font-size: 1.02rem;
+}
+.eq .katex { color: var(--text); }
+.eq-note { color: var(--text-dim); font-size: .85rem; margin: -.5rem 0 .8rem; }
+
+.plot { width: 100%; height: 320px; }
+.plot.tall { height: 380px; }
+.plot.cloud { height: 460px; }
+
+/* ---- Landing page cards ---- */
+.hero { padding: 2.2rem 0 1rem; }
+.hero h1 { font-size: 2.1rem; margin: 0 0 .4rem; }
+.hero h1 .psi { color: var(--accent-2); }
+.hero p { color: var(--text-dim); max-width: 65ch; font-size: 1.05rem; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 1.4rem; }
+@media (max-width: 920px) { .cards { grid-template-columns: 1fr; } }
+.app-card {
+  display: block; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.3rem; box-shadow: var(--shadow);
+  transition: transform .14s ease, border-color .14s ease; color: var(--text);
+}
+.app-card:hover { transform: translateY(-4px); border-color: var(--accent); text-decoration: none; }
+.app-card .tag { color: var(--accent); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+.app-card h3 { margin: .3rem 0 .5rem; font-size: 1.25rem; }
+.app-card .eq { margin: .6rem 0 .3rem; background: var(--bg-soft); }
+.app-card p { color: var(--text-dim); font-size: .92rem; margin: .6rem 0 0; }
+
+.footer { color: var(--text-dim); font-size: .85rem; text-align: center; padding: 2rem 0 .5rem; }
+.kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--bg-soft);
+  border: 1px solid var(--border); border-radius: 6px; padding: .05rem .4rem; font-size: .85em; }
