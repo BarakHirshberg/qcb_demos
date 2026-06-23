@@ -44,8 +44,10 @@ normalization checks.
 
 ## Deploy
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which publishes the
-site to GitHub Pages automatically.
+Hosted on GitHub Pages straight from the `main` branch (no build step): in the
+repo settings, **Pages → Build and deployment → Source: Deploy from a branch →
+`main` / `/ (root)`**. The `.nojekyll` file makes Pages serve the files as-is.
+Every push to `main` republishes automatically.
 
 ## License
 
