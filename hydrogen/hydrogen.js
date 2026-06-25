@@ -154,6 +154,11 @@ function renderEnergy() {
   const { n: nSel, l: lSel, m: mSel } = state;
   const En = (n) => -1 / (2 * n * n);             // atomic units (Z = 1)
   const turn = (n) => 2 * n * n;                  // outer turning point r_n = 2n²
+
+  // energy eigenvalue equation (notes eq. 41), with the selected n substituted
+  math(document.getElementById('eq-energy'),
+    `E_n=-\\frac{Z^2}{2n^2}\\,\\frac{e^2}{a}=-\\frac{1}{2n^2}\\ \\text{(a.u.)}` +
+    `\\qquad E_{${nSel}}=-\\frac{1}{2(${nSel})^2}=${En(nSel).toFixed(4)}\\ \\text{a.u.}`);
   const xmax = turn(NMAX);                        // widest level sets the r-range
 
   // V(r) = −1/r
