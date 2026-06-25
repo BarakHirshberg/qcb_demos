@@ -36,15 +36,15 @@
 
     <!-- ENERGY LEVELS -->
     <div class="card">
-      <div class="controls" style="margin:0 0 .6rem;box-shadow:none;background:transparent;border:none;padding:0">
-        <h2 style="margin:0">Energy levels &nbsp;E<sub>n</sub> = −1/2n² &nbsp;<span class="sub-h">— Coulomb well &amp; degeneracy</span></h2>
-        <div class="qn toggle"><label>zoom to level</label><div class="seg" id="seg-zoom"></div></div>
-      </div>
+      <h2>Energy levels &nbsp;E<sub>n</sub> = −1/2n² &nbsp;<span class="sub-h">— Coulomb well &amp; degeneracy</span></h2>
       <p class="hint">The energy depends only on n. The <b>selected</b> level is split into its n² degenerate
         states — one segment per state, grouped by ℓ (s, p, d, …) with 2ℓ+1 values of m each (colors = ℓ,
         selected state circled); the other levels are plain lines. Levels get shallower and denser as they
         converge to the ionization limit E = 0.</p>
       <div class="eq" id="eq-energy"></div>
+      <div class="controls" style="margin:.2rem 0 .3rem;box-shadow:none;background:transparent;border:none;padding:0;justify-content:flex-end">
+        <div class="qn"><label>zoom to level</label><div class="seg" id="seg-zoom"></div></div>
+      </div>
       <div class="plot tall" id="plot-energy"></div>
     </div>
 
