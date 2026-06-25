@@ -210,13 +210,10 @@ function renderEnergy() {
   const inY = (y) => y >= yRange[0] && y <= yRange[1];
   const inX = (x) => x >= xRange[0] && x <= xRange[1];
 
-  // fixed top-left info box for the selected state (avoids edge clipping)
-  const ann = [
-    { xref: 'paper', yref: 'paper', x: 0.015, y: 0.97, xanchor: 'left', yanchor: 'top', align: 'left',
-      text: `selected: n=${nSel}, ℓ=${lSel} (${LNAME[lSel]}), m=${mSel}<br>E = ${e.toFixed(4)} Ha · g = n² = ${nSel * nSel}`,
-      showarrow: false, font: { color: COL.text, size: 11 },
-      bgcolor: 'rgba(20,26,33,0.65)', bordercolor: COL.grid, borderwidth: 1, borderpad: 5 },
-  ];
+  // selected-state info lives in an HTML caption above the plot (never overlaps lines)
+  document.getElementById('energy-sel').innerHTML =
+    `selected: n=${nSel}, ℓ=${lSel} (${LNAME[lSel]}), m=${mSel} &nbsp;·&nbsp; E = ${e.toFixed(4)} Ha &nbsp;·&nbsp; g = n² = ${nSel * nSel}`;
+  const ann = [];
   if (inY(0)) ann.push({ x: xRange[1], y: 0, xanchor: 'right', yanchor: 'bottom', text: 'ionization  E = 0',
     showarrow: false, font: { color: COL.dim, size: 10 } });
   for (let n = 1; n <= NMAX; n++)            // n labels (only those in view)
