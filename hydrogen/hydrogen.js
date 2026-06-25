@@ -144,6 +144,76 @@ function renderRadial() {
   }), CONFIG);
 }
 
+// =============================================================================
+//  Energy levels: Coulomb well + Rydberg ladder with degeneracy fanned out
+// =============================================================================
+const LCOL = ['#6ea8fe', '#f78fb3', '#4dd2a0', '#ffd166', '#c792ea', '#ff9f6b']; // s,p,d,f,g,h
+const LNAME = ['s', 'p', 'd', 'f', 'g', 'h'];
+
+function renderEnergy() {
+  const { n: nSel, l: lSel, m: mSel } = state;
+  const En = (n) => -1 / (2 * n * n);             // atomic units (Z = 1)
+  const turn = (n) => 2 * n * n;                  // outer turning point r_n = 2n²
+  const xmax = turn(NMAX);                        // widest level sets the r-range
+
+  // V(r) = −1/r
+  const vx = [], vy = [];
+  for (let i = 1; i <= 800; i++) { const r = (i / 800) * xmax; vx.push(r); vy.push(-1 / r); }
+  const traces = [{ x: vx, y: vy, mode: 'lines', line: { color: COL.dim, width: 2 },
+    hoverinfo: 'skip', showlegend: false }];
+
+  const e = En(nSel);
+  // non-selected levels: plain lines (spanning to their own turning points)
+  const baseX = [], baseY = [];
+  for (let n = 1; n <= NMAX; n++) {
+    if (n === nSel) continue;
+    baseX.push(0, turn(n), null); baseY.push(En(n), En(n), null);
+  }
+  traces.push({ x: baseX, y: baseY, mode: 'lines', line: { color: COL.dim, width: 1.5 },
+    hoverinfo: 'skip', showlegend: false });
+
+  // SELECTED level: one line divided into n² segments (one per state), colored by ℓ
+  traces.push({ x: [0, turn(nSel)], y: [e, e], mode: 'lines',
+    line: { color: 'rgba(230,237,243,0.13)', width: 16 }, hoverinfo: 'skip', showlegend: false });
+  const segX = LNAME.map(() => []), segY = LNAME.map(() => []);
+  let selMid = null, k = 0;
+  const w = turn(nSel) / (nSel * nSel);
+  for (let l = 0; l < nSel; l++)
+    for (let mm = -l; mm <= l; mm++) {
+      const a = w * (k + 0.1), b = w * (k + 0.9);        // segment + gap
+      segX[l].push(a, b, null); segY[l].push(e, e, null);
+      if (l === lSel && mm === mSel) selMid = (a + b) / 2;
+      k++;
+    }
+  for (let l = 0; l < nSel; l++)
+    traces.push({ x: segX[l], y: segY[l], mode: 'lines', name: LNAME[l],
+      line: { color: LCOL[l], width: 6 }, hoverinfo: 'skip' });
+  if (selMid !== null) traces.push({ x: [selMid], y: [e], mode: 'markers', showlegend: false,
+    marker: { symbol: 'circle', size: 13, color: 'rgba(0,0,0,0)', line: { color: '#fff', width: 2 } },
+    hoverinfo: 'skip' });
+
+  // fixed top-left info box for the selected state (avoids edge clipping)
+  const ann = [
+    { xref: 'paper', yref: 'paper', x: 0.015, y: 0.97, xanchor: 'left', yanchor: 'top', align: 'left',
+      text: `selected: n=${nSel}, ℓ=${lSel} (${LNAME[lSel]}), m=${mSel}<br>E = ${e.toFixed(4)} Ha · g = n² = ${nSel * nSel}`,
+      showarrow: false, font: { color: COL.text, size: 11 },
+      bgcolor: 'rgba(20,26,33,0.65)', bordercolor: COL.grid, borderwidth: 1, borderpad: 5 },
+    { x: xmax, y: 0, xanchor: 'right', yanchor: 'bottom', text: 'ionization  E = 0',
+      showarrow: false, font: { color: COL.dim, size: 10 } },
+  ];
+  for (let n = 1; n <= NMAX; n++)            // short n labels at each level's right end
+    ann.push({ x: turn(n), y: En(n), xanchor: 'left', yanchor: 'middle', xshift: 6, text: `n=${n}`,
+      showarrow: false, font: { color: n === nSel ? COL.text : COL.dim, size: n === nSel ? 11 : 10 } });
+
+  Plotly.react('plot-energy', traces, layout({
+    margin: { l: 60, r: 30, t: 10, b: 44 },
+    showlegend: true, legend: { orientation: 'h', y: 1.1, x: 0.5, xanchor: 'center', font: { size: 11 } },
+    xaxis: { title: 'r  (a)', range: [0, xmax + 6] },
+    yaxis: { title: 'E  (Hartree)', range: [-0.55, 0.04], zeroline: true, zerolinecolor: COL.dim },
+    annotations: ann,
+  }), CONFIG);
+}
+
 function radialNodes(n, l, rmax) {
   const nodes = [], N = 2000;
   let prev = radialR(n, l, 1e-6);
@@ -579,6 +649,7 @@ function scene3d(L) {
 function render() {
   renderControls();
   renderEquations();
+  renderEnergy();
   renderRadial();
   renderAngular();
   renderCloud();
