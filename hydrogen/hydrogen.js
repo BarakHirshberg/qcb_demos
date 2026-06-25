@@ -219,7 +219,7 @@ function renderAngular() {
   const ths = [], amp = [], den = [];
   for (let i = 0; i <= 360; i++) {
     const th = (i / 360) * Math.PI, v = Th(th);
-    ths.push(i / 2); amp.push(v); den.push(v * v);          // ϑ in degrees 0…180
+    ths.push(th); amp.push(v); den.push(v * v);             // ϑ in radians 0…π
   }
   Plotly.react('plot-theta-cart', [
     { x: ths, y: amp, mode: 'lines', line: { color: COL.accent, width: 2.5 }, name: 'Θ(ϑ)' },
@@ -229,7 +229,9 @@ function renderAngular() {
     showlegend: true,
     legend: { x: 0.5, y: 1.18, xanchor: 'center', orientation: 'h', font: { size: 10 } },
     margin: { l: 46, r: 14, t: 30, b: 40 },
-    xaxis: { title: 'ϑ  (deg)', range: [0, 180], tickvals: [0, 45, 90, 135, 180] },
+    xaxis: { title: 'ϑ  (rad)', range: [0, Math.PI],
+      tickvals: [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4, Math.PI],
+      ticktext: ['0', 'π/4', 'π/2', '3π/4', 'π'] },
     yaxis: { title: 'Θ , |Θ|²', zeroline: true, zerolinecolor: COL.dim },
   }), CONFIG);
 
@@ -237,7 +239,7 @@ function renderAngular() {
   const Np = 400, ps = [], re = [], im = [];
   for (let i = 0; i <= Np; i++) {
     const p = (i / Np) * 2 * Math.PI, z = ringPhi(m, p);
-    ps.push(p * 180 / Math.PI); re.push(z.re); im.push(z.im);
+    ps.push(p); re.push(z.re); im.push(z.im);              // φ in radians 0…2π
   }
   Plotly.react('plot-phi', [
     { x: ps, y: re, mode: 'lines', line: { color: COL.pos, width: 2.5 }, name: 'Re Φ' },
@@ -246,7 +248,9 @@ function renderAngular() {
     showlegend: true,
     legend: { x: 0.5, y: 1.18, xanchor: 'center', orientation: 'h', font: { size: 10 } },
     margin: { l: 46, r: 14, t: 30, b: 40 },
-    xaxis: { title: 'φ  (deg)', range: [0, 360], tickvals: [0, 90, 180, 270, 360] },
+    xaxis: { title: 'φ  (rad)', range: [0, 2 * Math.PI],
+      tickvals: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2, 2 * Math.PI],
+      ticktext: ['0', 'π/2', 'π', '3π/2', '2π'] },
     yaxis: { title: 'Φ<sub>m</sub>(φ)', range: [-0.46, 0.46] },
   }), CONFIG);
 }
