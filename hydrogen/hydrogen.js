@@ -231,7 +231,8 @@ function renderAngular() {
     margin: { l: 46, r: 14, t: 30, b: 40 },
     xaxis: { title: 'ϑ  (rad)', range: [0, Math.PI],
       tickvals: [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4, Math.PI],
-      ticktext: ['0', 'π/4', 'π/2', '3π/4', 'π'] },
+      ticktext: ['0', '<i>π</i>/4', '<i>π</i>/2', '3<i>π</i>/4', '<i>π</i>'],
+      tickfont: { family: 'Georgia, "Times New Roman", serif' } },
     yaxis: { title: 'Θ , |Θ|²', zeroline: true, zerolinecolor: COL.dim },
   }), CONFIG);
 
@@ -250,7 +251,8 @@ function renderAngular() {
     margin: { l: 46, r: 14, t: 30, b: 40 },
     xaxis: { title: 'φ  (rad)', range: [0, 2 * Math.PI],
       tickvals: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2, 2 * Math.PI],
-      ticktext: ['0', 'π/2', 'π', '3π/2', '2π'] },
+      ticktext: ['0', '<i>π</i>/2', '<i>π</i>', '3<i>π</i>/2', '2<i>π</i>'],
+      tickfont: { family: 'Georgia, "Times New Roman", serif' } },
     yaxis: { title: 'Φ<sub>m</sub>(φ)', range: [-0.46, 0.46] },
   }), CONFIG);
 }
