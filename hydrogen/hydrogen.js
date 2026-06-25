@@ -3,7 +3,7 @@
 // =============================================================================
 import {
   radialR, radialNorm, radialRmax, laguerreCoeffs,
-  sphHarmNorm, assocLegendre, ringPhi, sphHarmComplex, realSphHarm,
+  sphHarmNorm, assocLegendre, assocLegendreParts, ringPhi, sphHarmComplex, realSphHarm,
   realOrbitalName, factorial, selfTest,
 } from '../js/special.js';
 import { segmented, math, layout, CONFIG, CONFIG_3D, COL, fmt, fracTex } from '../js/ui.js';
@@ -64,6 +64,11 @@ function renderEquations() {
   // Angular function in the notes' notation: Y_ℓ^m(ϑ,φ) = Θ_ℓm(ϑ) · Φ_m(φ).
   math(document.getElementById('eq-angular'),
     `Y_{${l}}^{${m}}(\\vartheta,\\varphi)=\\underbrace{N_{\\ell}^{m}\\,P_{${l}}^{${Math.abs(m)}}(\\cos\\vartheta)}_{\\Theta_{${l}${m}}(\\vartheta)}\\;\\cdot\\;\\underbrace{${phi}}_{\\Phi_{${m}}(\\varphi)},\\quad N_{\\ell}^{m}=${fmt(Nlm)}`);
+  // Explicit associated Legendre P_l^|m|(cos ϑ), like the radial Laguerre note.
+  const am = Math.abs(m);
+  document.getElementById('eq-angular-note').innerHTML =
+    `N<sub>ℓ</sub><sup>m</sup> = ${fmt(Nlm)} &nbsp;·&nbsp; ` +
+    `P<sub>${l}</sub><sup>${am}</sup>(cos ϑ) = ${katexInline(legendreTex(assocLegendreParts(l, am)))}`;
 
   const rad = n - l - 1, pol = l - Math.abs(m), azi = Math.abs(m);
   document.getElementById('dens-note').innerHTML =
@@ -78,6 +83,31 @@ function renderEquations() {
 }
 function katexInline(tex) {
   return katex.renderToString(tex, { displayMode: false, throwOnError: false });
+}
+
+// Format P_l^m(cosϑ) = sign · sin^m ϑ · (polynomial in cos ϑ) as LaTeX.
+function legendreTex(parts) {
+  const cosPow = (k) => (k === 0 ? '' : k === 1 ? '\\cos\\vartheta' : `\\cos^{${k}}\\vartheta`);
+  const sinPart = parts.sinPow === 0 ? '' : parts.sinPow === 1 ? '\\sin\\vartheta\\,' : `\\sin^{${parts.sinPow}}\\vartheta\\,`;
+  const nz = parts.poly.map((c, k) => ({ c, k })).filter((t) => t.c.num !== 0);
+  if (nz.length === 0) return '0';
+
+  if (nz.length === 1) {                       // single term: coef · sin^m ϑ · cos^k ϑ
+    const { c, k } = nz[0];
+    const sign = parts.sign * (c.num < 0 ? -1 : 1) < 0 ? '-' : '';
+    const mag = { num: Math.abs(c.num), den: c.den };
+    const coef = (mag.num === 1 && mag.den === 1) ? '' : fracTex(mag);
+    const body = `${coef}${sinPart}${cosPow(k)}` || '1';
+    return `${sign}${body}`;
+  }
+
+  const terms = nz.map(({ c, k }, idx) => {       // multi-term → parenthesize
+    const mag = { num: Math.abs(c.num), den: c.den };
+    const coef = (mag.num === 1 && mag.den === 1 && k > 0) ? '' : fracTex(mag);
+    const sgn = c.num < 0 ? '-' : (idx ? '+' : '');
+    return `${sgn} ${coef}${cosPow(k)}`.trim();
+  });
+  return `${parts.sign < 0 ? '-' : ''}${sinPart}\\left(${terms.join(' ')}\\right)`;
 }
 
 // =============================================================================

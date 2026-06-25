@@ -65,7 +65,43 @@ function binom(n, k) {
 }
 
 function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; }
-function reduceFrac(num, den) { const g = gcd(num, den); return { num: num / g, den: den / g }; }
+function reduceFrac(num, den) { if (den < 0) { num = -num; den = -den; } const g = gcd(num, den); return { num: num / g, den: den / g }; }
+
+// Exact coefficients of the ordinary Legendre polynomial P_l(x) (powers x^0..x^l),
+// via the recurrence (n+1)P_{n+1} = (2n+1) x P_n − n P_{n-1}, using fractions.
+export function legendreCoeffs(l) {
+  const sub = (a, b) => reduceFrac(a.num * b.den - b.num * a.den, a.den * b.den);
+  const scl = (a, k) => reduceFrac(a.num * k, a.den);
+  const dvi = (a, k) => reduceFrac(a.num, a.den * k);
+  let Pm1 = [{ num: 1, den: 1 }];
+  if (l === 0) return Pm1;
+  let Pc = [{ num: 0, den: 1 }, { num: 1, den: 1 }];
+  for (let n = 1; n < l; n++) {
+    const shifted = [{ num: 0, den: 1 }, ...Pc];        // x · P_n
+    const len = Math.max(shifted.length, Pm1.length);
+    const next = [];
+    for (let i = 0; i < len; i++) {
+      const a = shifted[i] ? scl(shifted[i], 2 * n + 1) : { num: 0, den: 1 };
+      const b = Pm1[i] ? scl(Pm1[i], n) : { num: 0, den: 1 };
+      next.push(dvi(sub(a, b), n + 1));
+    }
+    Pm1 = Pc; Pc = next;
+  }
+  return Pc;
+}
+
+// Explicit form P_l^m(cos ϑ) = sign · sin^m ϑ · (poly in cos ϑ), where the poly
+// is d^m/dx^m P_l(x). Returns { sign:(-1)^m, sinPow:m, poly:[fractions of cosϑ] }.
+export function assocLegendreParts(l, m) {
+  const deriv = (c) => {
+    const o = [];
+    for (let i = 1; i < c.length; i++) o.push(reduceFrac(c[i].num * i, c[i].den));
+    return o.length ? o : [{ num: 0, den: 1 }];
+  };
+  let poly = legendreCoeffs(l);
+  for (let k = 0; k < m; k++) poly = deriv(poly);
+  return { sign: m % 2 === 0 ? 1 : -1, sinPow: m, poly };
+}
 
 // ---- Associated Legendre  P_l^m(x),  -1 <= x <= 1 ---------------------------
 //  Numerical-Recipes 'plgndr', valid for 0 <= m <= l. Condon-Shortley included.
