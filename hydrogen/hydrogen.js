@@ -9,7 +9,7 @@ import {
 import { segmented, math, layout, CONFIG, CONFIG_3D, COL, fmt, fracTex } from '../js/ui.js';
 
 const NMAX = 6;
-const state = { n: 2, l: 1, m: 0, isoFrac: 0.9, showNodes: false };
+const state = { n: 2, l: 1, m: 0, isoFrac: 0.9, showNodes: true };
 
 // ---- Controls: rebuild downstream options so only valid (n,l,m) are offered ----
 function renderControls() {
@@ -21,7 +21,7 @@ function renderControls() {
     range(-state.l, state.l), state.m, (v) => { state.m = v; render(); });
   segmented(document.getElementById('seg-nodes'),
     [false, true], state.showNodes,
-    (v) => { state.showNodes = v; if (isoField) drawClouds(); },
+    (v) => { state.showNodes = v; renderControls(); if (isoField) drawClouds(); },
     (v) => (v ? 'show' : 'hide'));
 }
 function clampL() { if (state.l > state.n - 1) state.l = state.n - 1; clampM(); }
@@ -565,7 +565,9 @@ function applyUrlState() {
   if (l >= 0 && l <= state.n - 1) state.l = l;
   const m = parseInt(p.get('m'), 10);
   if (Math.abs(m) <= state.l) state.m = m;
-  if (p.get('nodes') === '1') state.showNodes = true;
+  const nodes = p.get('nodes');
+  if (nodes === '1') state.showNodes = true;
+  else if (nodes === '0') state.showNodes = false;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
