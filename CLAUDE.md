@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Keep this file current.** After any *major* change — a new app, a new panel,
+> an architectural shift, a new convention, or a hard-won gotcha — update the
+> relevant section here in the same change. Do **not** log minor tweaks (small
+> styling, label/copy edits, one-off fixes).
+
 ## What this is
 
 Interactive, browser-based visualizations of undergraduate quantum-mechanics
@@ -74,6 +79,11 @@ longevity. Don't add npm/bundling.
   (`ℓ−|m|`, a flat disk at ϑ=90°), azimuthal planes (`|m|`, real orbital only).
 - Angular panel: Θ(ϑ) amplitude + |Θ|² density as **polar** plots; Θ and Φ as
   **Cartesian** plots (angle axes in **radians**, π ticks rendered serif/italic).
+- **Energy panel** (`renderEnergy`): Coulomb well `V(r)=−1/r` + the ladder
+  `E_n=−1/2n²` (atomic units), each level drawn to its turning point `r_n=2n²`
+  and converging to the ionization limit `E=0`. Only the **selected** level is a
+  line split into its `n²` degenerate states (one segment per state, grouped/
+  colored by ℓ, selected state circled); the other levels are plain lines.
 
 ## Conventions (match the course notes — keep consistent across apps)
 
