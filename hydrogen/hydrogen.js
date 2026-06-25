@@ -9,7 +9,7 @@ import {
 import { segmented, math, layout, CONFIG, CONFIG_3D, COL, fmt, fracTex } from '../js/ui.js';
 
 const NMAX = 6;
-const state = { n: 2, l: 1, m: 0, isoFrac: 0.9, showNodes: true };
+const state = { n: 2, l: 1, m: 0, isoFrac: 0.9, showNodes: true, zoomEnergy: false };
 
 // ---- Controls: rebuild downstream options so only valid (n,l,m) are offered ----
 function renderControls() {
@@ -23,6 +23,10 @@ function renderControls() {
     [false, true], state.showNodes,
     (v) => { state.showNodes = v; renderControls(); if (isoField) drawClouds(); },
     (v) => (v ? 'show' : 'hide'));
+  segmented(document.getElementById('seg-zoom'),
+    [false, true], state.zoomEnergy,
+    (v) => { state.zoomEnergy = v; renderControls(); renderEnergy(); },
+    (v) => (v ? 'on' : 'off'));
 }
 function clampL() { if (state.l > state.n - 1) state.l = state.n - 1; clampM(); }
 function clampM() { if (Math.abs(state.m) > state.l) state.m = 0; }
@@ -197,24 +201,34 @@ function renderEnergy() {
     marker: { symbol: 'circle', size: 13, color: 'rgba(0,0,0,0)', line: { color: '#fff', width: 2 } },
     hoverinfo: 'skip' });
 
+  // zoom-to-level frames the selected level (segments span the width); the
+  // default view keeps the full well + ladder.
+  const zoom = state.zoomEnergy;
+  const h = Math.max(0.025, 0.4 * Math.abs(e));
+  const xRange = zoom ? [0, turn(nSel) * 1.08] : [0, xmax + 6];
+  const yRange = zoom ? [e - h, e + h] : [-0.55, 0.04];
+  const inY = (y) => y >= yRange[0] && y <= yRange[1];
+  const inX = (x) => x >= xRange[0] && x <= xRange[1];
+
   // fixed top-left info box for the selected state (avoids edge clipping)
   const ann = [
     { xref: 'paper', yref: 'paper', x: 0.015, y: 0.97, xanchor: 'left', yanchor: 'top', align: 'left',
       text: `selected: n=${nSel}, ℓ=${lSel} (${LNAME[lSel]}), m=${mSel}<br>E = ${e.toFixed(4)} Ha · g = n² = ${nSel * nSel}`,
       showarrow: false, font: { color: COL.text, size: 11 },
       bgcolor: 'rgba(20,26,33,0.65)', bordercolor: COL.grid, borderwidth: 1, borderpad: 5 },
-    { x: xmax, y: 0, xanchor: 'right', yanchor: 'bottom', text: 'ionization  E = 0',
-      showarrow: false, font: { color: COL.dim, size: 10 } },
   ];
-  for (let n = 1; n <= NMAX; n++)            // short n labels at each level's right end
-    ann.push({ x: turn(n), y: En(n), xanchor: 'left', yanchor: 'middle', xshift: 6, text: `n=${n}`,
-      showarrow: false, font: { color: n === nSel ? COL.text : COL.dim, size: n === nSel ? 11 : 10 } });
+  if (inY(0)) ann.push({ x: xRange[1], y: 0, xanchor: 'right', yanchor: 'bottom', text: 'ionization  E = 0',
+    showarrow: false, font: { color: COL.dim, size: 10 } });
+  for (let n = 1; n <= NMAX; n++)            // n labels (only those in view)
+    if (inY(En(n)) && inX(turn(n)))
+      ann.push({ x: turn(n), y: En(n), xanchor: 'left', yanchor: 'middle', xshift: 6, text: `n=${n}`,
+        showarrow: false, font: { color: n === nSel ? COL.text : COL.dim, size: n === nSel ? 11 : 10 } });
 
   Plotly.react('plot-energy', traces, layout({
     margin: { l: 60, r: 30, t: 10, b: 44 },
     showlegend: true, legend: { orientation: 'h', y: 1.1, x: 0.5, xanchor: 'center', font: { size: 11 } },
-    xaxis: { title: 'r  (a)', range: [0, xmax + 6] },
-    yaxis: { title: 'E  (Hartree)', range: [-0.55, 0.04], zeroline: true, zerolinecolor: COL.dim },
+    xaxis: { title: 'r  (a)', range: xRange },
+    yaxis: { title: 'E  (Hartree)', range: yRange, zeroline: true, zerolinecolor: COL.dim },
     annotations: ann,
   }), CONFIG);
 }
@@ -680,6 +694,7 @@ function applyUrlState() {
   const nodes = p.get('nodes');
   if (nodes === '1') state.showNodes = true;
   else if (nodes === '0') state.showNodes = false;
+  if (p.get('zoom') === '1') state.zoomEnergy = true;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
