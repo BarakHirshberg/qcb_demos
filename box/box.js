@@ -120,6 +120,8 @@ function setVisibility() {
   el('qn-b').style.display = ab ? '' : 'none';
   el('qn-U').style.display = m === '2pi' ? '' : 'none';
   el('qn-k').style.display = m === '2pi' ? '' : 'none';
+  el('card-energy').style.display = m === '2pi' ? 'none' : '';
+  el('eq-2pi').style.display = m === '2pi' ? '' : 'none';
   el('panel-1d').style.display = m === '1d' ? '' : 'none';
   el('panel-2d').style.display = m === '1d' ? 'none' : '';
   el('panel-2p-extra').style.display = (m === '2p' || m === '2pi') ? '' : 'none';
@@ -141,11 +143,8 @@ function renderEquations() {
   }
   if (mode === '2pi') {
     const { vals } = solveCI(state.U), k = Math.min(state.k, vals.length - 1);
-    el('energy-sub').textContent = '— two interacting particles (numerical)';
-    math(el('eq-box'), `\\hat H=-\\tfrac{\\hbar^2}{2m}\\!\\left(\\partial_{x_1}^2+\\partial_{x_2}^2\\right)+\\dfrac{C}{\\sqrt{(x_1-x_2)^2+\\eta^2}}`);
-    el('energy-hint').innerHTML = 'Screened (soft) Coulomb repulsion, solved numerically by configuration interaction in the box basis. As C grows the levels shift up and the degeneracies split.';
-    el('energy-sel').innerHTML = `selected: ${k === 0 ? 'ground state' : `eigenstate k = ${k}`} &nbsp;·&nbsp; E = ${vals[k].toFixed(2)} (h²/8mL²) &nbsp;·&nbsp; interaction C = ${state.U.toFixed(1)}`;
-    el('h2-2d').innerHTML = 'Wavefunction &nbsp;ψ(x₁,x₂) &nbsp;<span class="sub-h">— interacting (numerical)</span>';
+    math(el('eq-2pi'), `\\hat H=-\\tfrac{\\hbar^2}{2m}\\!\\left(\\partial_{x_1}^2+\\partial_{x_2}^2\\right)+\\dfrac{C}{\\sqrt{(x_1-x_2)^2+\\eta^2}}`);
+    el('h2-2d').innerHTML = `Wavefunction &nbsp;ψ(x₁,x₂) &nbsp;<span class="sub-h">— ${k === 0 ? 'ground state' : `eigenstate k = ${k}`}, &nbsp;E = ${vals[k].toFixed(2)} (h²/8mL²), &nbsp;C = ${state.U.toFixed(1)} (numerical)</span>`;
     el('lbl-hm-psi').innerHTML = 'ψ(x₁,x₂) — signed';
     el('lbl-hm-dens').innerHTML = '|ψ(x₁,x₂)|² — correlated joint density';
     el('psi-note-2d').innerHTML = `With repulsion the state <b>no longer factorizes</b>: ψ(x₁,x₂) ≠ φ(x₁)φ(x₂). The density is depleted along the diagonal x₁ = x₂ (the particles avoid each other) — they are <b>correlated</b>. Set C = 0 to recover the uncorrelated product.`;
@@ -179,8 +178,8 @@ function renderEquations() {
 //  Energy diagrams
 // =============================================================================
 function renderEnergy() {
+  if (state.mode === '2pi') return;   // energy diagram removed for interacting mode
   if (state.mode === '1d') renderEnergy1D();
-  else if (state.mode === '2pi') renderEnergyInteracting();
   else renderEnergy2D();
 }
 
@@ -241,24 +240,6 @@ function renderEnergy2D() {
     margin: { l: 56, r: 96, t: 10, b: 16 }, showlegend: false,
     xaxis: { range: [0, 1.04], showticklabels: false, showgrid: false, zeroline: false },
     yaxis: { title: 'E  (h²/8mL²)', range: [0, Emax + 2], zeroline: true, zerolinecolor: COL.dim },
-    annotations: ann,
-  }), CONFIG);
-}
-
-function renderEnergyInteracting() {
-  const { U, k } = state, { vals } = solveCI(U), x0 = 0.05, x1 = 0.95, traces = [];
-  for (let i = 0; i < KSHOW; i++) traces.push({ x: [x0, x1], y: [vals[i], vals[i]], mode: 'lines',
-    line: { color: i === k ? COL.accent : COL.grid, width: i === k ? 7 : 1.5 }, hoverinfo: 'skip' });
-  traces.push({ x: [(x0 + x1) / 2], y: [vals[k]], mode: 'markers',
-    marker: { symbol: 'circle', size: 13, color: 'rgba(0,0,0,0)', line: { color: '#fff', width: 2 } }, hoverinfo: 'skip' });
-  const ann = [];
-  for (let i = 0; i < KSHOW; i++) ann.push({ x: x1, y: vals[i], xanchor: 'left', xshift: 8, yanchor: 'middle',
-    text: `${i === 0 ? 'k=0 (ground)' : 'k=' + i}: E=${vals[i].toFixed(2)}`,
-    showarrow: false, font: { color: i === k ? COL.text : COL.dim, size: i === k ? 12 : 10 } });
-  Plotly.react('plot-energy', traces, layout({
-    margin: { l: 56, r: 120, t: 10, b: 16 }, showlegend: false,
-    xaxis: { range: [0, 1.05], showticklabels: false, showgrid: false, zeroline: false },
-    yaxis: { title: 'E  (h²/8mL²)', range: [0, vals[KSHOW - 1] * 1.08], zeroline: true, zerolinecolor: COL.dim },
     annotations: ann,
   }), CONFIG);
 }

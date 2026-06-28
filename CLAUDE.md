@@ -139,7 +139,9 @@ shown/hidden via `setVisibility()` (no separate pages). Units: L=1, E in h²/8mL
   `solveCI(U)` forms H=H₀+C·V1 and diagonalizes with `eighJacobi` (cyclic-Jacobi symmetric
   eigensolver in `special.js`), cached in `ciCache`. Controls: an interaction slider **C** (0…`UMAX`=10,
   rAF-throttled `scheduleU`→`render`) and an eigenstate index **k** (`seg-k`, lowest `KSHOW`=8 levels).
-  `renderEnergyInteracting()` draws the C-dependent ladder (degeneracies split as C grows). The 2D/3D
+  **No energy diagram** for this mode (the whole `card-energy` is hidden — found confusing); instead the
+  Hamiltonian is shown in the wavefunction panel via `eq-2pi`, and the selected state/energy/C are in the
+  `h2-2d` heading. The 2D/3D
   panels and `drawSlice()` read a shared module-level `field = {u, Zp, Zd, amax}`: `buildFieldProduct`
   (factorized 2p) or `buildFieldCI(vec)` (correlated 2pi). At C>0 the joint |ψ|² is depleted along the
   diagonal x₁=x₂ and the conditional P(x₂|x₁) (computed numerically from `field.Zd`) **shifts with x₁**
