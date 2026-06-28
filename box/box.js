@@ -290,18 +290,19 @@ function drawSlice() {
   const istar = Math.round(x1 * N);
   let Zc = 0; for (let jy = 0; jy <= N; jy++) Zc += Zd[jy][istar] * du;
   const cond = new Array(N + 1); for (let jy = 0; jy <= N; jy++) cond[jy] = Zc > 1e-9 ? Zd[jy][istar] / Zc : P2[jy];
-  const p1max = Math.max(...P1);
+  // shared y-scale across both panels (covers P1, P2 and the conditional)
+  const yTop = Math.max(...P1, ...P2, ...cond) * 1.05;
   Plotly.react('plot-marg1', [
     { x: u, y: P1, mode: 'lines', fill: 'tozeroy', line: { color: COL.density, width: 2 }, fillcolor: 'rgba(124,92,255,0.18)' },
-    { x: [x1, x1], y: [0, p1max * 1.05], mode: 'lines', line: { color: '#fff', width: 2, dash: 'dot' } },
+    { x: [x1, x1], y: [0, yTop], mode: 'lines', line: { color: '#fff', width: 2, dash: 'dot' } },
   ], layout({ margin: { l: 46, r: 14, t: 10, b: 40 },
-    xaxis: { title: 'x₁  (L)', range: [0, 1] }, yaxis: { title: 'P(x₁)', rangemode: 'tozero' } }), CONFIG);
+    xaxis: { title: 'x₁  (L)', range: [0, 1] }, yaxis: { title: 'P(x₁)', range: [0, yTop] } }), CONFIG);
   Plotly.react('plot-cond', [
     { x: u, y: P2, mode: 'lines', fill: 'tozeroy', line: { color: COL.density, width: 2 }, fillcolor: 'rgba(124,92,255,0.18)', name: 'marginal P(x₂)' },
     { x: u, y: cond, mode: 'lines', line: { color: COL.accent2, width: 2.5, dash: 'dot' }, name: 'conditional P(x₂|x₁)' },
   ], layout({ showlegend: true, legend: { x: 0.5, y: 1.16, xanchor: 'center', orientation: 'h', font: { size: 10 } },
     margin: { l: 46, r: 14, t: 28, b: 40 }, xaxis: { title: 'x₂  (L)', range: [0, 1] },
-    yaxis: { title: 'density', rangemode: 'tozero' } }), CONFIG);
+    yaxis: { title: 'density', range: [0, yTop] } }), CONFIG);
   el('slice-val').textContent = `x₁ = ${x1.toFixed(2)} L`;
   try { Plotly.relayout('plot-hm-dens', { 'shapes[0].x0': x1, 'shapes[0].x1': x1 }); } catch (e) { /* not a 2-particle mode */ }
 }
