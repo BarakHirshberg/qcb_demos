@@ -290,8 +290,14 @@ function drawSlice() {
   const istar = Math.round(x1 * N);
   let Zc = 0; for (let jy = 0; jy <= N; jy++) Zc += Zd[jy][istar] * du;
   const cond = new Array(N + 1); for (let jy = 0; jy <= N; jy++) cond[jy] = Zc > 1e-9 ? Zd[jy][istar] / Zc : P2[jy];
-  // shared y-scale across both panels (covers P1, P2 and the conditional)
-  const yTop = Math.max(...P1, ...P2, ...cond) * 1.05;
+  // shared y-scale, FIXED as x₁ is dragged: take the largest conditional peak
+  // over every x₁ column (not just the current one) so the axes don't rescale.
+  let condPeak = 0;
+  for (let ix = 0; ix <= N; ix++) {
+    let z = 0, cmax = 0; for (let jy = 0; jy <= N; jy++) { z += Zd[jy][ix] * du; if (Zd[jy][ix] > cmax) cmax = Zd[jy][ix]; }
+    if (z > 1e-9 && cmax / z > condPeak) condPeak = cmax / z;
+  }
+  const yTop = Math.max(...P1, ...P2, condPeak) * 1.05;
   Plotly.react('plot-marg1', [
     { x: u, y: P1, mode: 'lines', fill: 'tozeroy', line: { color: COL.density, width: 2 }, fillcolor: 'rgba(124,92,255,0.18)' },
     { x: [x1, x1], y: [0, yTop], mode: 'lines', line: { color: '#fff', width: 2, dash: 'dot' } },
