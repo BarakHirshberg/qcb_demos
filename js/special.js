@@ -13,6 +13,31 @@
 //     p_y, p_z, d_xy, ...).
 // =============================================================================
 
+// ---- Symmetric eigensolver (cyclic Jacobi) ----------------------------------
+// A is an n×n symmetric array-of-arrays. Returns { values, vectors } sorted by
+// ascending eigenvalue; vectors[k] is the k-th eigenvector (length n).
+export function eighJacobi(A0) {
+  const n = A0.length;
+  const A = A0.map((r) => r.slice());
+  const V = Array.from({ length: n }, (_, i) => { const r = new Array(n).fill(0); r[i] = 1; return r; });
+  for (let sweep = 0; sweep < 100; sweep++) {
+    let off = 0;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += A[p][q] * A[p][q];
+    if (off < 1e-20) break;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) {
+      if (Math.abs(A[p][q]) < 1e-300) continue;
+      const th = 0.5 * Math.atan2(2 * A[p][q], A[q][q] - A[p][p]);
+      const c = Math.cos(th), s = Math.sin(th);
+      for (let k = 0; k < n; k++) { const kp = A[k][p], kq = A[k][q]; A[k][p] = c * kp - s * kq; A[k][q] = s * kp + c * kq; }
+      for (let k = 0; k < n; k++) { const pk = A[p][k], qk = A[q][k]; A[p][k] = c * pk - s * qk; A[q][k] = s * pk + c * qk; }
+      for (let k = 0; k < n; k++) { const vp = V[k][p], vq = V[k][q]; V[k][p] = c * vp - s * vq; V[k][q] = s * vp + c * vq; }
+    }
+  }
+  const vals = A.map((r, i) => r[i]);
+  const ord = vals.map((_, i) => i).sort((a, b) => vals[a] - vals[b]);
+  return { values: ord.map((i) => vals[i]), vectors: ord.map((i) => V.map((r) => r[i])) };
+}
+
 // ---- Factorials -------------------------------------------------------------
 
 const _factCache = [1];

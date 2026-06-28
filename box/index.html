@@ -24,9 +24,10 @@
     <h1 class="page-title">Particle in a box &nbsp;<span class="sub-h">(infinite square well)</span></h1>
     <p class="page-sub">
       A particle confined to a box with infinite walls (V = 0 inside, ∞ outside). Switch between
-      <b>one particle in 1D</b>, <b>one particle in 2D</b>, and <b>two non-interacting particles in 1D</b>.
-      The last two are mathematically the same product wavefunction (x,y ↔ x₁,x₂). Lengths are in units of
-      the box length L (= 1), energies in units of h²/8mL².
+      <b>one particle in 1D</b>, <b>one particle in 2D</b>, <b>two non-interacting particles in 1D</b>, and
+      <b>two interacting particles in 1D</b> (screened Coulomb, solved numerically). The 2D and two-free-particle
+      cases share the same product wavefunction (x,y ↔ x₁,x₂); turning on interaction breaks that factorization
+      and produces correlation. Lengths are in units of the box length L (= 1), energies in units of h²/8mL².
     </p>
 
     <div class="controls">
@@ -34,6 +35,8 @@
       <div class="qn" id="qn-1d"><label>quantum number <span class="var">n</span></label><div class="seg" id="seg-n"></div></div>
       <div class="qn" id="qn-a"><label class="var" id="lbl-a">nₓ</label><div class="seg" id="seg-a"></div></div>
       <div class="qn" id="qn-b"><label class="var" id="lbl-b">n_y</label><div class="seg" id="seg-b"></div></div>
+      <div class="qn" id="qn-U"><label>interaction <span class="var">C</span></label><input type="range" id="U-slider" min="0" max="100" value="30" /><span class="var lvl" id="U-val">C = 3.0</span></div>
+      <div class="qn" id="qn-k"><label>eigenstate <span class="var">k</span></label><div class="seg" id="seg-k"></div></div>
     </div>
 
     <!-- ENERGY LEVELS -->

@@ -121,9 +121,9 @@ Dimensionless units: x in √(ℏ/μω) (α = μω/ℏ = 1), E in ℏω. Uses `o
   toggle frames the selected level (y-axis) so the on-level ψ_n is legible
   (default off = full ladder); `?zoom=1` URL param.
 
-### Particle in a box (`box/box.js`) — one app, three modes
+### Particle in a box (`box/box.js`) — one app, four modes
 
-`state.mode` ∈ {`1d`,`2d`,`2p`} drives everything; panels/controls are
+`state.mode` ∈ {`1d`,`2d`,`2p`,`2pi`} drives everything; panels/controls are
 shown/hidden via `setVisibility()` (no separate pages). Units: L=1, E in h²/8mL².
 - **1d:** ψ_n=√(2/L)sin(nπx/L), E_n=n²; walls + n² ladder with ψ_n on its line, ψ/|ψ|² plots.
   A "zoom to level" toggle (1d only) frames the selected level so the on-level ψ_n is legible.
@@ -132,6 +132,18 @@ shown/hidden via `setVisibility()` (no separate pages). Units: L=1, E in h²/8mL
   labels x₁/x₂, E=E₁+E₂. Extra `drawSlice()` panel: a slider "particle 1 found at x₁" with a line on
   the joint |ψ|² and the conditional P(x₂|x₁) shown to coincide with the marginal |φ(x₂)|² for any x₁
   ⇒ **no correlation** (the joint factorizes).
+- **2pi (two interacting particles):** screened/soft Coulomb `Ĥ = T₁+T₂ + C/√((x₁−x₂)²+η²)`
+  (η=`ETA`=0.05), solved numerically by **configuration interaction** in the box product basis
+  (cf. Guy Cohen's demo, but CI not dense real-space — browser-friendly). `buildV1()` precomputes
+  the unit-strength interaction matrix once (`CI_NMAX`=10 → 100×100, via the intermediate `W`);
+  `solveCI(U)` forms H=H₀+C·V1 and diagonalizes with `eighJacobi` (cyclic-Jacobi symmetric
+  eigensolver in `special.js`), cached in `ciCache`. Controls: an interaction slider **C** (0…`UMAX`=10,
+  rAF-throttled `scheduleU`→`render`) and an eigenstate index **k** (`seg-k`, lowest `KSHOW`=8 levels).
+  `renderEnergyInteracting()` draws the C-dependent ladder (degeneracies split as C grows). The 2D/3D
+  panels and `drawSlice()` read a shared module-level `field = {u, Zp, Zd, amax}`: `buildFieldProduct`
+  (factorized 2p) or `buildFieldCI(vec)` (correlated 2pi). At C>0 the joint |ψ|² is depleted along the
+  diagonal x₁=x₂ and the conditional P(x₂|x₁) (computed numerically from `field.Zd`) **shifts with x₁**
+  ⇒ **correlation**. C=0 recovers the uncorrelated product (validated: ground E=2.00 exactly).
 
 ## Conventions (match the course notes — keep consistent across apps)
 
