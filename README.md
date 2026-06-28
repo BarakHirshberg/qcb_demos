@@ -19,6 +19,9 @@ build step.
   with no radial part: the rotational energy ladder `E_ℓ=ℏ²ℓ(ℓ+1)/2I` with its
   2ℓ+1 degeneracy, the Θ/Φ angular plots, and 3-D balloons of `|Y|²` and the
   real (orbital-shaped) harmonics with nodal cones/planes.
+- **Particle on a ring** (planar rotor) — the states `Φ_m(φ)=e^{imφ}/√(2π)`: the
+  `m²` energy ladder with ±m degeneracy, a complex (traveling) ⇄ real (standing)
+  basis toggle, and a 3-D "wave on the ring" colored by phase/sign.
 - **Harmonic oscillator** — *coming soon.*
 
 Notation follows the course notes: `ϑ` polar angle, `φ` azimuthal, `ℓ` for the

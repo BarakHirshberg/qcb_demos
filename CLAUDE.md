@@ -16,14 +16,14 @@ eigenfunctions. Hosted free on GitHub Pages.
 
 Live: https://barakhirshberg.github.io/qcb_demos/
 
-**Status:** the **Hydrogen atom** and **Particle on a sphere** apps are complete
-and deployed. The **Harmonic oscillator** app is still planned and shown as
-"coming soon" (non-clickable) on the landing page (`index.html`) and in the nav
-of every page. Building it means: create `oscillator/` (`index.html` + JS
-importing `../js/special.js` and `../js/ui.js`, using `oscPsi`/`hermite`), then
-flip the "coming soon" `<span class="soon">` / `<div class="app-card soon">` into
-`<a href>` links in `index.html`, `hydrogen/index.html`, and `sphere/index.html`.
-Keep the nav order consistent across all pages.
+**Status:** the **Hydrogen atom**, **Particle on a sphere**, and **Particle on a
+ring** apps are complete and deployed. The **Harmonic oscillator** app is still
+planned and shown as "coming soon" (non-clickable) on the landing page
+(`index.html`) and in the nav of every page. Building it means: create
+`oscillator/` (`index.html` + JS importing `../js/special.js` and `../js/ui.js`,
+using `oscPsi`/`hermite`), then flip the "coming soon" `<span class="soon">` /
+`<div class="app-card soon">` into `<a href>` links in `index.html` and every
+app page's nav. Keep the nav order consistent across all pages.
 
 ## Commands
 
@@ -99,6 +99,15 @@ helpers, all the special-function imports) — no radial part. Differences:
   `r(ϑ,φ)=|Y|²` (complex, single color) or `|Y_real|` (sign-colored blue/red) —
   the spherical-harmonic "balloons". Node overlay = polar cones + (real only)
   azimuthal planes; no radial spheres.
+
+### Particle on a ring (`ring/ring.js`) — planar rotor
+
+Just the φ part. State `{m, basis}` (m = −6…6; basis complex/real). Energy
+`E_m=m²` (units ℏ²/2I); ±m share each level (`renderEnergy` splits the selected
+level into its 1 or 2 states). `Φ_m=e^{imφ}/√(2π)` (complex, traveling, uniform
+|Φ|²) ⇄ real standing waves cos/sin(mφ) (with 2|m| nodes). 3-D `renderRing`: a
+`scatter3d` line around the unit circle, height = Re Φ, colored by **phase** mφ
+(cyclic colorscale, complex) or **sign** (real).
 
 ## Conventions (match the course notes — keep consistent across apps)
 

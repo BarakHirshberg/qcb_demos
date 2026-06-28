@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Particle on a ring · Quantum Visualizer</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="../index.html">Home</a>
+    <a href="../hydrogen/">Hydrogen atom</a>
+    <span class="soon">Harmonic oscillator · soon</span>
+    <a href="../sphere/">Particle on a sphere</a>
+    <a href="../ring/" class="active">Particle on a ring</a>
+  </nav>
+
+  <div class="wrap">
+    <h1 class="page-title">Particle on a ring &nbsp;<span class="sub-h">(rigid rotor in a plane)</span></h1>
+    <p class="page-sub">
+      A particle free to move on a circle of fixed radius. The eigenfunctions are the
+      particle-on-a-ring states Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π) — the azimuthal building block
+      of the sphere and the hydrogen atom. Energies depend on m²: E<sub>m</sub> = ℏ²m²/2I, so
+      +m and −m (opposite circulation) are degenerate. Choose the integer m.
+    </p>
+
+    <div class="controls">
+      <div class="qn"><label>quantum number <span class="var">m</span></label><div class="seg" id="seg-m"></div></div>
+      <div class="qn toggle">
+        <label>basis</label>
+        <div class="seg" id="seg-basis"></div>
+      </div>
+    </div>
+
+    <!-- ENERGY LEVELS -->
+    <div class="card">
+      <h2>Energy levels &nbsp;E<sub>m</sub> = ℏ²m²/2I &nbsp;<span class="sub-h">— ladder &amp; ±m degeneracy</span></h2>
+      <p class="hint">Energy grows as m². Because E depends only on m², the states +m and −m (clockwise vs
+        counter-clockwise circulation) share each level: every level except m=0 is <b>doubly degenerate</b>.
+        The <b>selected</b> level is split into its states; the selected one is circled.</p>
+      <div class="eq" id="eq-energy"></div>
+      <div class="controls" style="margin:.2rem 0 .3rem;box-shadow:none;background:transparent;border:none;padding:0;justify-content:flex-start">
+        <span class="eq-note" id="energy-sel" style="margin:0"></span>
+      </div>
+      <div class="plot tall" id="plot-energy"></div>
+    </div>
+
+    <!-- WAVEFUNCTION Φ -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Wavefunction &nbsp;Φ<sub>m</sub>(φ)</h2>
+      <p class="hint" id="phi-note"></p>
+      <div class="eq" id="eq-phi"></div>
+      <div class="grid cols-2">
+        <div><p class="eq-note">Φ<sub>m</sub>(φ) and |Φ<sub>m</sub>|² vs φ — cartesian</p><div class="plot" id="plot-phi"></div></div>
+        <div><p class="eq-note">Wave on the ring — height = Φ (real part), color = phase/sign · drag to rotate</p><div class="plot" id="plot-ring"></div></div>
+      </div>
+    </div>
+
+    <p class="footer">Drag the 3D ring to rotate · scroll to zoom · open the console for normalization self-tests.</p>
+  </div>
+
+  <script type="module" src="ring.js"></script>
+</body>
+</html>

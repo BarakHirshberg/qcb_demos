@@ -15,6 +15,7 @@
     <a href="hydrogen/">Hydrogen atom</a>
     <span class="soon">Harmonic oscillator · soon</span>
     <a href="sphere/">Particle on a sphere</a>
+    <a href="ring/">Particle on a ring</a>
   </nav>
 
   <div class="wrap">
@@ -52,6 +53,14 @@
         <p>The spherical-harmonic "balloons" of the rigid rotor, the Θ (Legendre) and Φ (ring)
            building blocks, and the (2<em>ℓ</em>+1)-fold degenerate energy ladder.</p>
       </a>
+
+      <a class="app-card" href="ring/">
+        <span class="tag">App 4 · Angular momentum</span>
+        <h3>Particle on a ring</h3>
+        <div class="eq" id="eq-r"></div>
+        <p>The planar-rotor states Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π): the m² energy ladder with
+           ±m degeneracy, traveling vs standing waves, and a 3D wave around the ring.</p>
+      </a>
     </section>
 
     <p class="footer">
@@ -67,6 +76,7 @@
       r('eq-h', 'R_{n\\ell}(r)\\,Y_\\ell^{\\,m}(\\vartheta,\\varphi)');
       r('eq-o', '\\psi_n(x)=N_n H_n(x)\\,e^{-x^2/2}');
       r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m P_\\ell^m(\\cos\\vartheta)\\,e^{im\\varphi}');
+      r('eq-r', '\\Phi_m(\\varphi)=\\tfrac{1}{\\sqrt{2\\pi}}\\,e^{im\\varphi}');
     });
   </script>
 </body>

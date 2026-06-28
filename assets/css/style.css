@@ -109,7 +109,7 @@ a:hover { text-decoration: underline; }
 .hero h1 { font-size: 2.1rem; margin: 0 0 .4rem; }
 .hero h1 .psi { color: var(--accent-2); }
 .hero p { color: var(--text-dim); max-width: 65ch; font-size: 1.05rem; }
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 1.4rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-top: 1.4rem; }
 @media (max-width: 920px) { .cards { grid-template-columns: 1fr; } }
 .app-card {
   display: block; background: var(--bg-card); border: 1px solid var(--border);
