@@ -7,7 +7,7 @@ import { oscPsi, oscClassical, hermiteCoeffs, factorial, selfTest } from '../js/
 import { segmented, math, layout, CONFIG, COL, fmt } from '../js/ui.js';
 
 const NMAX = 10;
-const state = { n: 0, classical: true };
+const state = { n: 0, classical: true, zoom: false };
 
 function renderControls() {
   segmented(document.getElementById('seg-n'),
@@ -16,6 +16,10 @@ function renderControls() {
     [false, true], state.classical,
     (v) => { state.classical = v; renderControls(); renderDensity(); },
     (v) => (v ? 'show' : 'hide'));
+  segmented(document.getElementById('seg-zoom'),
+    [false, true], state.zoom,
+    (v) => { state.zoom = v; renderControls(); renderLevels(); },
+    (v) => (v ? 'on' : 'off'));
 }
 function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
 function normN(n) { return Math.sqrt(1 / (Math.pow(2, n) * factorial(n))) * Math.pow(Math.PI, -0.25); }
@@ -71,21 +75,24 @@ function renderLevels() {
   const e = n + 0.5, xt = turning(n);
   for (const s of [-1, 1]) traces.push({ x: [s * xt, s * xt], y: [0, e], mode: 'lines',
     line: { color: COL.accent2, width: 1, dash: 'dot' }, hoverinfo: 'skip' });
-  // selected ψ_n drawn on its energy line
+  // selected ψ_n drawn on its energy line (bigger amplitude when zoomed in)
+  const ampScale = state.zoom ? 0.75 : 0.42;
   const px = [], py = []; let amax = 1e-9;
   for (let i = 0; i <= 600; i++) { const x = -xmax + (2 * xmax) * i / 600; amax = Math.max(amax, Math.abs(oscPsi(n, x))); }
-  for (let i = 0; i <= 600; i++) { const x = -xmax + (2 * xmax) * i / 600; px.push(x); py.push(e + 0.42 * oscPsi(n, x) / amax); }
+  for (let i = 0; i <= 600; i++) { const x = -xmax + (2 * xmax) * i / 600; px.push(x); py.push(e + ampScale * oscPsi(n, x) / amax); }
   traces.push({ x: px, y: py, mode: 'lines', line: { color: COL.accent, width: 2.5 }, hoverinfo: 'skip' });
 
+  const yRange = state.zoom ? [e - 0.95, e + 0.95] : [-0.3, NMAX + 1.6];
   const ann = [];
   for (let k = 0; k <= NMAX; k++)
-    ann.push({ x: -xmax, y: k + 0.5, xanchor: 'right', xshift: -4, yanchor: 'middle', text: `n=${k}`,
-      showarrow: false, font: { color: k === n ? COL.text : COL.dim, size: k === n ? 12 : 9 } });
+    if (!state.zoom || (k + 0.5 >= yRange[0] && k + 0.5 <= yRange[1]))
+      ann.push({ x: -xmax, y: k + 0.5, xanchor: 'right', xshift: -4, yanchor: 'middle', text: `n=${k}`,
+        showarrow: false, font: { color: k === n ? COL.text : COL.dim, size: k === n ? 12 : 9 } });
 
   Plotly.react('plot-levels', traces, layout({
     margin: { l: 56, r: 16, t: 10, b: 44 },
     xaxis: { title: 'x  (√(ℏ/μω))', range: [-xmax, xmax], zeroline: false },
-    yaxis: { title: 'E , V  (ℏω)', range: [-0.3, NMAX + 1.6], zeroline: false },
+    yaxis: { title: 'E , V  (ℏω)', range: yRange, zeroline: false },
     annotations: ann,
   }), CONFIG);
 }
@@ -155,6 +162,7 @@ function applyUrlState() {
   const n = parseInt(p.get('n'), 10);
   if (n >= 0 && n <= NMAX) state.n = n;
   if (p.get('classical') === '0') state.classical = false;
+  if (p.get('zoom') === '1') state.zoom = true;
 }
 
 window.addEventListener('DOMContentLoaded', () => {

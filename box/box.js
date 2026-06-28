@@ -9,7 +9,7 @@ import { selfTest } from '../js/special.js';
 import { segmented, math, layout, CONFIG, CONFIG_3D, COL } from '../js/ui.js';
 
 const NMAX1 = 8, NMAX2 = 4;
-const state = { mode: '1d', n: 1, a: 1, b: 1, slice: 0.5 };
+const state = { mode: '1d', n: 1, a: 1, b: 1, slice: 0.5, zoom: false };
 
 const el = (id) => document.getElementById(id);
 const range = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
@@ -28,6 +28,8 @@ function renderControls() {
   segmented(el('seg-n'), range(1, NMAX1), state.n, (v) => { state.n = v; render(); });
   segmented(el('seg-a'), range(1, NMAX2), state.a, (v) => { state.a = v; render(); });
   segmented(el('seg-b'), range(1, NMAX2), state.b, (v) => { state.b = v; render(); });
+  segmented(el('seg-zoom'), [false, true], state.zoom,
+    (v) => { state.zoom = v; renderControls(); renderEnergy1D(); }, (v) => (v ? 'on' : 'off'));
   el('lbl-a').innerHTML = state.mode === '2p' ? 'n<sub>1</sub>' : 'n<sub>x</sub>';
   el('lbl-b').innerHTML = state.mode === '2p' ? 'n<sub>2</sub>' : 'n<sub>y</sub>';
 }
@@ -39,6 +41,7 @@ function setVisibility() {
   el('panel-1d').style.display = is1d ? '' : 'none';
   el('panel-2d').style.display = is1d ? 'none' : '';
   el('panel-2p-extra').style.display = state.mode === '2p' ? '' : 'none';
+  el('zoom-ctrl').style.display = is1d ? '' : 'none';
 }
 
 // ---- Equations + notes ------------------------------------------------------
@@ -83,17 +86,20 @@ function renderEnergy1D() {
   traces.push({ x: [0, 1], y: [0, 0], mode: 'lines', line: { color: COL.dim, width: 3 }, hoverinfo: 'skip' });
   for (let k = 1; k <= NMAX1; k++) traces.push({ x: [0, 1], y: [k * k, k * k], mode: 'lines',
     line: { color: k === n ? COL.text : COL.grid, width: k === n ? 1.5 : 1 }, hoverinfo: 'skip' });
-  const e = n * n, gap = Math.min(2 * n - 1, 2 * n + 1), amp = 0.42 * gap;
+  const e = n * n, gap = 2 * n - 1, amp = (state.zoom ? 0.7 : 0.42) * gap;
   const px = [], py = [];
   for (let i = 0; i <= 400; i++) { const x = i / 400; px.push(x); py.push(e + amp * psi1(n, x) / Math.SQRT2); }
   traces.push({ x: px, y: py, mode: 'lines', line: { color: COL.accent, width: 2.5 }, hoverinfo: 'skip' });
+  const yRange = state.zoom ? [e - 0.9 * gap, e + 0.9 * gap] : [-2, ymax];
   const ann = [];
-  for (let k = 1; k <= NMAX1; k++) ann.push({ x: 0, y: k * k, xanchor: 'right', xshift: -6, yanchor: 'middle',
-    text: `n=${k}`, showarrow: false, font: { color: k === n ? COL.text : COL.dim, size: k === n ? 12 : 9 } });
+  for (let k = 1; k <= NMAX1; k++)
+    if (!state.zoom || (k * k >= yRange[0] && k * k <= yRange[1]))
+      ann.push({ x: 0, y: k * k, xanchor: 'right', xshift: -6, yanchor: 'middle',
+        text: `n=${k}`, showarrow: false, font: { color: k === n ? COL.text : COL.dim, size: k === n ? 12 : 9 } });
   Plotly.react('plot-energy', traces, layout({
     margin: { l: 60, r: 16, t: 10, b: 44 },
     xaxis: { title: 'x  (L)', range: [-0.05, 1.05], zeroline: false },
-    yaxis: { title: 'E  (h²/8mL²)', range: [-2, ymax], zeroline: false },
+    yaxis: { title: 'E  (h²/8mL²)', range: yRange, zeroline: false },
     annotations: ann,
   }), CONFIG);
 }
@@ -226,6 +232,7 @@ function applyUrlState() {
   const n = parseInt(p.get('n'), 10); if (n >= 1 && n <= NMAX1) state.n = n;
   const a = parseInt(p.get('a'), 10); if (a >= 1 && a <= NMAX2) state.a = a;
   const b = parseInt(p.get('b'), 10); if (b >= 1 && b <= NMAX2) state.b = b;
+  if (p.get('zoom') === '1') state.zoom = true;
 }
 
 let slicePending = false;

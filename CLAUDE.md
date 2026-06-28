@@ -117,13 +117,16 @@ Dimensionless units: x in √(ℏ/μω) (α = μω/ℏ = 1), E in ℏω. Uses `o
 - `renderWave`/`renderDensity`: ψ_n(x) (nodes marked) and |ψ_n|² with the
   classical probability `1/(π√(x_t²−x²))` overlaid (toggle). Notation per the
   course notes: ψ_n=N_n H_n(√α x)e^{−αx²/2}, N_n=(2ⁿn!)^{-1/2}(α/π)^{1/4},
-  physicists' Hermite (shown explicitly above the plots).
+  physicists' Hermite (shown explicitly above the plots). A "zoom to level"
+  toggle frames the selected level (y-axis) so the on-level ψ_n is legible
+  (default off = full ladder); `?zoom=1` URL param.
 
 ### Particle in a box (`box/box.js`) — one app, three modes
 
 `state.mode` ∈ {`1d`,`2d`,`2p`} drives everything; panels/controls are
 shown/hidden via `setVisibility()` (no separate pages). Units: L=1, E in h²/8mL².
 - **1d:** ψ_n=√(2/L)sin(nπx/L), E_n=n²; walls + n² ladder with ψ_n on its line, ψ/|ψ|² plots.
+  A "zoom to level" toggle (1d only) frames the selected level so the on-level ψ_n is legible.
 - **2d:** ψ=(2/L)sin(nₓπx)sin(n_yπy), E=nₓ²+n_y²; degeneracy ladder, signed-ψ + |ψ|² heatmaps, 3-D surface.
 - **2p:** identical product math (the notes' point: 2D box ≡ two non-interacting 1D particles),
   labels x₁/x₂, E=E₁+E₂. Extra `drawSlice()` panel: a slider "particle 1 found at x₁" with a line on
