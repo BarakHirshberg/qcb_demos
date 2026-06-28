@@ -82,7 +82,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       const r = (id, tex) => katex.render(tex, document.getElementById(id),
         { displayMode: false, throwOnError: false });
-      r('eq-h', 'R_{n\\ell}(r)\\,Y_\\ell^{\\,m}(\\vartheta,\\varphi)');
+      r('eq-h', '\\psi_{n\\ell m}=R_{n\\ell}(r)\\,Y_\\ell^{\\,m}(\\vartheta,\\varphi)');
       r('eq-o', '\\psi_n(x)=N_n H_n(x)\\,e^{-x^2/2}');
       r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m P_\\ell^m(\\cos\\vartheta)\\,e^{im\\varphi}');
       r('eq-r', '\\Phi_m(\\varphi)=\\tfrac{1}{\\sqrt{2\\pi}}\\,e^{im\\varphi}');
