@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Harmonic oscillator · Quantum Visualizer</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="../index.html">Home</a>
+    <a href="../hydrogen/">Hydrogen atom</a>
+    <a href="../oscillator/" class="active">Harmonic oscillator</a>
+    <a href="../sphere/">Particle on a sphere</a>
+    <a href="../ring/">Particle on a ring</a>
+  </nav>
+
+  <div class="wrap">
+    <h1 class="page-title">Harmonic oscillator &nbsp;<span class="sub-h">(1-D)</span></h1>
+    <p class="page-sub">
+      A particle in a parabolic well V(x) = ½μω²x². The eigenstates are
+      ψ<sub>n</sub>(x) = N<sub>n</sub> H<sub>n</sub>(√α x) e<sup>−αx²/2</sup> (Hermite polynomials, α = μω/ℏ),
+      with equally-spaced energies E<sub>n</sub> = (n+½)ℏω. Lengths are in units of √(ℏ/μω) (so α = 1)
+      and energies in units of ℏω. Choose the quantum number n.
+    </p>
+
+    <div class="controls">
+      <div class="qn"><label>quantum number <span class="var">n</span></label><div class="seg" id="seg-n"></div></div>
+      <div class="qn toggle"><label>classical</label><div class="seg" id="seg-classical"></div></div>
+    </div>
+
+    <!-- ENERGY DIAGRAM -->
+    <div class="card">
+      <h2>Energy levels in the well &nbsp;<span class="sub-h">— V(x) = ½μω²x², &nbsp; E<sub>n</sub> = (n+½)ℏω</span></h2>
+      <p class="hint">Equally-spaced levels (ΔE = ℏω) sit in the parabolic well; the zero-point energy is
+        E<sub>0</sub> = ½ℏω. The selected ψ<sub>n</sub>(x) is drawn on its own energy line, extending past the
+        classical turning points (dashed) into the classically forbidden region.</p>
+      <div class="eq" id="eq-energy"></div>
+      <div class="plot tall" id="plot-levels"></div>
+    </div>
+
+    <!-- WAVEFUNCTION + DENSITY -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Wavefunction &nbsp;ψ<sub>n</sub>(x) &nbsp;and density &nbsp;|ψ<sub>n</sub>(x)|²</h2>
+      <p class="hint" id="psi-note"></p>
+      <div class="eq" id="eq-psi"></div>
+      <p class="eq-note" id="eq-psi-note"></p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">ψ<sub>n</sub>(x) — amplitude (n nodes)</p><div class="plot" id="plot-psi"></div></div>
+        <div><p class="eq-note">|ψ<sub>n</sub>(x)|² — vs the classical probability (dashed)</p><div class="plot" id="plot-density"></div></div>
+      </div>
+    </div>
+
+    <p class="footer">Toggle “classical” to compare with the classical oscillator · open the console for normalization self-tests.</p>
+  </div>
+
+  <script type="module" src="oscillator.js"></script>
+</body>
+</html>

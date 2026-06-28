@@ -16,14 +16,10 @@ eigenfunctions. Hosted free on GitHub Pages.
 
 Live: https://barakhirshberg.github.io/qcb_demos/
 
-**Status:** the **Hydrogen atom**, **Particle on a sphere**, and **Particle on a
-ring** apps are complete and deployed. The **Harmonic oscillator** app is still
-planned and shown as "coming soon" (non-clickable) on the landing page
-(`index.html`) and in the nav of every page. Building it means: create
-`oscillator/` (`index.html` + JS importing `../js/special.js` and `../js/ui.js`,
-using `oscPsi`/`hermite`), then flip the "coming soon" `<span class="soon">` /
-`<div class="app-card soon">` into `<a href>` links in `index.html` and every
-app page's nav. Keep the nav order consistent across all pages.
+**Status:** all four apps — **Hydrogen atom**, **Harmonic oscillator**,
+**Particle on a sphere**, **Particle on a ring** — are complete and deployed.
+(The `.soon` / `.badge-soon` CSS and the "coming soon" pattern are now unused but
+kept for any future app.)
 
 ## Commands
 
@@ -108,6 +104,18 @@ level into its 1 or 2 states). `Φ_m=e^{imφ}/√(2π)` (complex, traveling, uni
 |Φ|²) ⇄ real standing waves cos/sin(mφ) (with 2|m| nodes). 3-D `renderRing`: a
 `scatter3d` line around the unit circle, height = Re Φ, colored by **phase** mφ
 (cyclic colorscale, complex) or **sign** (real).
+
+### Harmonic oscillator (`oscillator/oscillator.js`)
+
+Dimensionless units: x in √(ℏ/μω) (α = μω/ℏ = 1), E in ℏω. Uses `oscPsi`,
+`oscClassical`, `hermiteCoeffs` from `special.js`. State `{n, classical}`.
+- `renderLevels`: parabola V=½x² + equally-spaced lines E_n=(n+½) (ΔE=ℏω); the
+  selected ψ_n is drawn on its energy line (scaled), with classical turning
+  points x_t=√(2n+1) dashed.
+- `renderWave`/`renderDensity`: ψ_n(x) (nodes marked) and |ψ_n|² with the
+  classical probability `1/(π√(x_t²−x²))` overlaid (toggle). Notation per the
+  course notes: ψ_n=N_n H_n(√α x)e^{−αx²/2}, N_n=(2ⁿn!)^{-1/2}(α/π)^{1/4},
+  physicists' Hermite (shown explicitly above the plots).
 
 ## Conventions (match the course notes — keep consistent across apps)
 

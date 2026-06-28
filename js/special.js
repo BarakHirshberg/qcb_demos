@@ -141,6 +141,20 @@ export function hermite(n, x) {
   return Hk;
 }
 
+// Exact integer coefficients of H_n(y) (powers y^0..y^n), as {num,den:1} for
+// pretty-printing. H_0=1, H_1=2y, H_2=4y²−2, H_3=8y³−12y, …
+export function hermiteCoeffs(n) {
+  if (n === 0) return [{ num: 1, den: 1 }];
+  let Hm1 = [1], Hc = [0, 2];
+  for (let k = 1; k < n; k++) {
+    const t1 = [0, ...Hc.map((c) => 2 * c)];          // 2y · H_k
+    const len = Math.max(t1.length, Hm1.length), next = [];
+    for (let i = 0; i < len; i++) next.push((t1[i] || 0) - 2 * k * (Hm1[i] || 0));
+    Hm1 = Hc; Hc = next;
+  }
+  return Hc.map((c) => ({ num: c, den: 1 }));
+}
+
 // =============================================================================
 //  Hydrogen atom
 // =============================================================================

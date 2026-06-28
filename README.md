@@ -22,7 +22,9 @@ build step.
 - **Particle on a ring** (planar rotor) — the states `Φ_m(φ)=e^{imφ}/√(2π)`: the
   `m²` energy ladder with ±m degeneracy, a complex (traveling) ⇄ real (standing)
   basis toggle, and a 3-D "wave on the ring" colored by phase/sign.
-- **Harmonic oscillator** — *coming soon.*
+- **Harmonic oscillator** — `ψ_n(x)=N_n H_n(√α x)e^{−αx²/2}` (Hermite polynomials,
+  α=μω/ℏ): the parabolic well with equally-spaced levels `E_n=(n+½)ℏω`, the
+  selected ψ_n on its energy line, and `|ψ_n|²` against the classical probability.
 
 Notation follows the course notes: `ϑ` polar angle, `φ` azimuthal, `ℓ` for the
 angular quantum number, Bohr radius `a`, nuclear charge `Z`. The valid quantum
