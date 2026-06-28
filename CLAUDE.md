@@ -16,13 +16,14 @@ eigenfunctions. Hosted free on GitHub Pages.
 
 Live: https://barakhirshberg.github.io/qcb_demos/
 
-**Status:** the **Hydrogen atom** app is complete and deployed. The **Harmonic
-oscillator** and **Particle on a sphere** apps are planned and currently shown
-as "coming soon" (non-clickable) on the landing page (`index.html`) and in the
-nav of every page. Building one means: create `oscillator/` or `sphere/`
-(`index.html` + JS importing `../js/special.js` and `../js/ui.js`), then flip the
-"coming soon" `<span class="soon">` / `<div class="app-card soon">` back into
-`<a href>` links in both `index.html` and `hydrogen/index.html`.
+**Status:** the **Hydrogen atom** and **Particle on a sphere** apps are complete
+and deployed. The **Harmonic oscillator** app is still planned and shown as
+"coming soon" (non-clickable) on the landing page (`index.html`) and in the nav
+of every page. Building it means: create `oscillator/` (`index.html` + JS
+importing `../js/special.js` and `../js/ui.js`, using `oscPsi`/`hermite`), then
+flip the "coming soon" `<span class="soon">` / `<div class="app-card soon">` into
+`<a href>` links in `index.html`, `hydrogen/index.html`, and `sphere/index.html`.
+Keep the nav order consistent across all pages.
 
 ## Commands
 
@@ -84,6 +85,20 @@ longevity. Don't add npm/bundling.
   and converging to the ionization limit `E=0`. Only the **selected** level is a
   line split into its `n²` degenerate states (one segment per state, grouped/
   colored by ℓ, selected state circled); the other levels are plain lines.
+
+### Particle on a sphere (`sphere/sphere.js`) — rigid rotor
+
+Reuses the hydrogen **angular** machinery (Θ/Φ panels, `legendreTex`, node
+helpers, all the special-function imports) — no radial part. Differences:
+- State is just `{l, m, showNodes}` (no n); controls offer ℓ and m=−ℓ…+ℓ.
+- **Energy** `renderEnergy`: free particle, no potential. Ladder `E_ℓ=ℓ(ℓ+1)`
+  (units ℏ²/2I) on a schematic x-axis; levels spread *apart* with ℓ. The selected
+  level is split into its **2ℓ+1** m-states (one segment each, labeled by m,
+  selected circled); others are plain lines.
+- **3D** `drawBalloon`: parametric *surface* (not isosurface) with radius
+  `r(ϑ,φ)=|Y|²` (complex, single color) or `|Y_real|` (sign-colored blue/red) —
+  the spherical-harmonic "balloons". Node overlay = polar cones + (real only)
+  azimuthal planes; no radial spheres.
 
 ## Conventions (match the course notes — keep consistent across apps)
 

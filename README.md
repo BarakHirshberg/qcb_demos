@@ -15,8 +15,11 @@ build step.
   particle-on-a-ring `Φ_m(φ)`; and 3-D boundary surfaces of the complex `|ψ|²`
   and the real orbital `ψ`, with an enclosed-probability slider and a
   "show nodes" overlay (radial spheres, polar cones, azimuthal planes).
+- **Particle on a sphere** (rigid rotor) — the spherical harmonics `Y_ℓ^m(ϑ,φ)`
+  with no radial part: the rotational energy ladder `E_ℓ=ℏ²ℓ(ℓ+1)/2I` with its
+  2ℓ+1 degeneracy, the Θ/Φ angular plots, and 3-D balloons of `|Y|²` and the
+  real (orbital-shaped) harmonics with nodal cones/planes.
 - **Harmonic oscillator** — *coming soon.*
-- **Particle on a sphere** — *coming soon.*
 
 Notation follows the course notes: `ϑ` polar angle, `φ` azimuthal, `ℓ` for the
 angular quantum number, Bohr radius `a`, nuclear charge `Z`. The valid quantum

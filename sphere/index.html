@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Particle on a sphere · Quantum Visualizer</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="../index.html">Home</a>
+    <a href="../hydrogen/">Hydrogen atom</a>
+    <span class="soon">Harmonic oscillator · soon</span>
+    <a href="../sphere/" class="active">Particle on a sphere</a>
+  </nav>
+
+  <div class="wrap">
+    <h1 class="page-title">Particle on a sphere &nbsp;<span class="sub-h">(rigid rotor)</span></h1>
+    <p class="page-sub">
+      A particle free to move on the surface of a sphere. The Hamiltonian is purely rotational,
+      so the eigenfunctions are the spherical harmonics ψ<sub>ℓm</sub>(ϑ,φ) = Y<sub>ℓ</sub><sup>m</sup>(ϑ,φ)
+      — the angular part of the hydrogen atom, with no radial part. Energies depend only on ℓ:
+      E<sub>ℓ</sub> = ℏ²ℓ(ℓ+1)/2I, each (2ℓ+1)-fold degenerate. Choose ℓ and m = −ℓ…+ℓ.
+    </p>
+
+    <div class="controls">
+      <div class="qn"><label>angular <span class="var">ℓ</span></label><div class="seg" id="seg-l"></div></div>
+      <div class="qn"><label>magnetic <span class="var">m</span></label><div class="seg" id="seg-m"></div></div>
+      <div class="qn toggle"><label>nodes</label><div class="seg" id="seg-nodes"></div></div>
+    </div>
+
+    <!-- ENERGY LEVELS -->
+    <div class="card">
+      <h2>Energy levels &nbsp;E<sub>ℓ</sub> = ℏ²ℓ(ℓ+1)/2I &nbsp;<span class="sub-h">— rotational ladder &amp; degeneracy</span></h2>
+      <p class="hint">The energy depends only on ℓ. Unlike the hydrogen atom, levels spread <em>apart</em>
+        as ℓ grows (∝ ℓ(ℓ+1)) and there is no upper bound. The <b>selected</b> level is divided into its
+        2ℓ+1 degenerate m-states (one segment each, labeled by m); the selected state is circled.</p>
+      <div class="eq" id="eq-energy"></div>
+      <div class="controls" style="margin:.2rem 0 .3rem;box-shadow:none;background:transparent;border:none;padding:0;justify-content:flex-start">
+        <span class="eq-note" id="energy-sel" style="margin:0"></span>
+      </div>
+      <div class="plot tall" id="plot-energy"></div>
+    </div>
+
+    <!-- ANGULAR / SPHERICAL HARMONIC -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Spherical harmonic &nbsp;Y<sub>ℓ</sub><sup>m</sup>(ϑ,φ)</h2>
+      <p class="hint">Legendre Θ(ϑ) × particle-on-a-ring Φ<sub>m</sub>(φ) — amplitude and probability density |·|².</p>
+      <div class="eq" id="eq-angular"></div>
+
+      <p class="eq-note">Polar plots (z-axis up) — Θ<sub>ℓm</sub>(ϑ) = N<sub>ℓ</sub><sup>m</sup> P<sub>ℓ</sub><sup>m</sup>(cos ϑ)</p>
+      <p class="eq-note" id="eq-angular-note"></p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">Θ(ϑ) amplitude — polar</p><div class="plot" id="plot-theta"></div></div>
+        <div><p class="eq-note">|Θ(ϑ)|² density — polar</p><div class="plot" id="plot-theta-den"></div></div>
+      </div>
+
+      <p class="eq-note" style="margin-top:1rem">Cartesian plots — Θ(ϑ) and the ring Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π)</p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">Θ(ϑ) &amp; |Θ(ϑ)|² vs ϑ</p><div class="plot" id="plot-theta-cart"></div></div>
+        <div><p class="eq-note">Φ<sub>m</sub>(φ): Re &amp; Im vs φ</p><div class="plot" id="plot-phi"></div></div>
+      </div>
+    </div>
+
+    <!-- 3D BALLOONS -->
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Probability density &nbsp;|Y<sub>ℓ</sub><sup>m</sup>|² &nbsp;<span class="sub-h">— complex harmonic</span></h2>
+      <p class="hint" id="dens-note"></p>
+      <p class="eq-note">Balloon r(ϑ,φ) = |Y<sub>ℓ</sub><sup>m</sup>(ϑ,φ)|² (axially symmetric about z) · drag to rotate</p>
+      <div class="plot cloud" id="plot-Ydens"></div>
+    </div>
+
+    <div class="card" style="margin-top:1.2rem">
+      <h2>Real spherical harmonic &nbsp;Y &nbsp;<span class="sub-h">— directional (orbital) shape</span></h2>
+      <p class="hint" id="real-note"></p>
+      <p class="eq-note">Balloon r(ϑ,φ) = |Y<sub>real</sub>(ϑ,φ)| — blue: Y&gt;0, red: Y&lt;0 · drag to rotate</p>
+      <div class="plot cloud" id="plot-Yreal"></div>
+    </div>
+
+    <p class="footer">Drag any 3D plot to rotate · scroll to zoom · open the console for normalization self-tests.</p>
+  </div>
+
+  <script type="module" src="sphere.js"></script>
+</body>
+</html>
