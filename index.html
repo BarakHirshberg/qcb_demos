@@ -14,6 +14,7 @@
     <a href="index.html" class="active">Home</a>
     <a href="hydrogen/">Hydrogen atom</a>
     <a href="oscillator/">Harmonic oscillator</a>
+    <a href="box/">Particle in a box</a>
     <a href="sphere/">Particle on a sphere</a>
     <a href="ring/">Particle on a ring</a>
   </nav>
@@ -30,7 +31,7 @@
 
     <section class="cards">
       <a class="app-card" href="hydrogen/">
-        <span class="tag">App 1 · Central potential</span>
+        <span class="tag">Central potential</span>
         <h3>Hydrogen atom</h3>
         <div class="eq" id="eq-h"></div>
         <p>Radial Laguerre functions <em>R<sub>nℓ</sub>(r)</em>, angular harmonics
@@ -39,15 +40,23 @@
       </a>
 
       <a class="app-card" href="oscillator/">
-        <span class="tag">App 2 · 1D bound states</span>
+        <span class="tag">1D bound states</span>
         <h3>Harmonic oscillator</h3>
         <div class="eq" id="eq-o"></div>
         <p>Hermite eigenfunctions drawn on their energy levels inside the parabola, with
            <em>|ψ<sub>n</sub>|²</em> and the classical probability for the quantum→classical limit.</p>
       </a>
 
+      <a class="app-card" href="box/">
+        <span class="tag">Bound states</span>
+        <h3>Particle in a box</h3>
+        <div class="eq" id="eq-bx"></div>
+        <p>The infinite square well in 1D and 2D, and two non-interacting particles in 1D:
+           energy ladders with degeneracy, wavefunctions, and a no-correlation demo.</p>
+      </a>
+
       <a class="app-card" href="sphere/">
-        <span class="tag">App 3 · Angular momentum</span>
+        <span class="tag">Angular momentum</span>
         <h3>Particle on a sphere</h3>
         <div class="eq" id="eq-s"></div>
         <p>The spherical-harmonic "balloons" of the rigid rotor, the Θ (Legendre) and Φ (ring)
@@ -55,7 +64,7 @@
       </a>
 
       <a class="app-card" href="ring/">
-        <span class="tag">App 4 · Angular momentum</span>
+        <span class="tag">Angular momentum</span>
         <h3>Particle on a ring</h3>
         <div class="eq" id="eq-r"></div>
         <p>The planar-rotor states Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π): the m² energy ladder with
@@ -77,6 +86,7 @@
       r('eq-o', '\\psi_n(x)=N_n H_n(x)\\,e^{-x^2/2}');
       r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m P_\\ell^m(\\cos\\vartheta)\\,e^{im\\varphi}');
       r('eq-r', '\\Phi_m(\\varphi)=\\tfrac{1}{\\sqrt{2\\pi}}\\,e^{im\\varphi}');
+      r('eq-bx', '\\psi_n(x)=\\sqrt{\\tfrac{2}{L}}\\,\\sin\\tfrac{n\\pi x}{L}');
     });
   </script>
 </body>

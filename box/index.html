@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Particle in a box · Quantum Visualizer</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <nav class="nav">
+    <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
+    <a href="../index.html">Home</a>
+    <a href="../hydrogen/">Hydrogen atom</a>
+    <a href="../oscillator/">Harmonic oscillator</a>
+    <a href="../box/" class="active">Particle in a box</a>
+    <a href="../sphere/">Particle on a sphere</a>
+    <a href="../ring/">Particle on a ring</a>
+  </nav>
+
+  <div class="wrap">
+    <h1 class="page-title">Particle in a box &nbsp;<span class="sub-h">(infinite square well)</span></h1>
+    <p class="page-sub">
+      A particle confined to a box with infinite walls (V = 0 inside, ∞ outside). Switch between
+      <b>one particle in 1D</b>, <b>one particle in 2D</b>, and <b>two non-interacting particles in 1D</b>.
+      The last two are mathematically the same product wavefunction (x,y ↔ x₁,x₂). Lengths are in units of
+      the box length L (= 1), energies in units of h²/8mL².
+    </p>
+
+    <div class="controls">
+      <div class="qn"><label>system</label><div class="seg" id="seg-mode"></div></div>
+      <div class="qn" id="qn-1d"><label>quantum number <span class="var">n</span></label><div class="seg" id="seg-n"></div></div>
+      <div class="qn" id="qn-a"><label class="var" id="lbl-a">nₓ</label><div class="seg" id="seg-a"></div></div>
+      <div class="qn" id="qn-b"><label class="var" id="lbl-b">n_y</label><div class="seg" id="seg-b"></div></div>
+    </div>
+
+    <!-- ENERGY LEVELS -->
+    <div class="card">
+      <h2>Energy levels &nbsp;<span class="sub-h" id="energy-sub"></span></h2>
+      <p class="hint" id="energy-hint"></p>
+      <div class="eq" id="eq-box"></div>
+      <div class="controls" style="margin:.2rem 0 .3rem;box-shadow:none;background:transparent;border:none;padding:0;justify-content:flex-start">
+        <span class="eq-note" id="energy-sel" style="margin:0"></span>
+      </div>
+      <div class="plot tall" id="plot-energy"></div>
+    </div>
+
+    <!-- 1D WAVEFUNCTION -->
+    <div class="card" id="panel-1d" style="margin-top:1.2rem">
+      <h2>Wavefunction &nbsp;ψ<sub>n</sub>(x) &nbsp;and density &nbsp;|ψ<sub>n</sub>(x)|²</h2>
+      <p class="hint" id="psi-note-1d"></p>
+      <div class="grid cols-2">
+        <div><p class="eq-note">ψ<sub>n</sub>(x) — amplitude (n−1 interior nodes)</p><div class="plot" id="plot-psi"></div></div>
+        <div><p class="eq-note">|ψ<sub>n</sub>(x)|² — probability density</p><div class="plot" id="plot-dens"></div></div>
+      </div>
+    </div>
+
+    <!-- 2D / TWO-PARTICLE WAVEFUNCTION -->
+    <div class="card" id="panel-2d" style="margin-top:1.2rem">
+      <h2 id="h2-2d">Wavefunction</h2>
+      <p class="hint" id="psi-note-2d"></p>
+      <div class="grid cols-2">
+        <div><p class="eq-note" id="lbl-hm-psi">ψ — signed (nodal lines)</p><div class="plot cloud" id="plot-hm-psi"></div></div>
+        <div><p class="eq-note" id="lbl-hm-dens">|ψ|² — probability density</p><div class="plot cloud" id="plot-hm-dens"></div></div>
+      </div>
+      <p class="eq-note" style="margin-top:1rem" id="lbl-surf">3D surface — drag to rotate</p>
+      <div class="plot cloud" id="plot-surf"></div>
+    </div>
+
+    <!-- TWO-PARTICLE: joint vs single-particle probability (correlation) -->
+    <div class="card" id="panel-2p-extra" style="margin-top:1.2rem">
+      <h2>Joint vs single-particle probability &nbsp;<span class="sub-h">— is there correlation?</span></h2>
+      <p class="hint" id="corr-note"></p>
+      <div class="controls" style="margin:.2rem 0 .6rem;box-shadow:none;background:transparent;border:none;padding:0;justify-content:flex-start">
+        <div class="qn"><label>particle 1 is found at</label>
+          <input type="range" id="slice-slider" min="2" max="98" value="50" />
+          <span class="var lvl" id="slice-val">x₁ = 0.50 L</span>
+        </div>
+      </div>
+      <div class="grid cols-2">
+        <div><p class="eq-note">particle 1: |φ<sub>n₁</sub>(x₁)|² (where it is found, dashed)</p><div class="plot" id="plot-marg1"></div></div>
+        <div><p class="eq-note">particle 2: marginal |φ<sub>n₂</sub>(x₂)|² and conditional P(x₂|x₁)</p><div class="plot" id="plot-cond"></div></div>
+      </div>
+    </div>
+
+    <p class="footer">Switch the system above · open the console for normalization self-tests.</p>
+  </div>
+
+  <script type="module" src="box.js"></script>
+</body>
+</html>

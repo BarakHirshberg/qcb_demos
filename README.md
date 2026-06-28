@@ -25,6 +25,10 @@ build step.
 - **Harmonic oscillator** — `ψ_n(x)=N_n H_n(√α x)e^{−αx²/2}` (Hermite polynomials,
   α=μω/ℏ): the parabolic well with equally-spaced levels `E_n=(n+½)ℏω`, the
   selected ψ_n on its energy line, and `|ψ_n|²` against the classical probability.
+- **Particle in a box** (infinite square well) — one app with three modes:
+  1D (`E_n=n²h²/8mL²`), 2D (`E=(nₓ²+n_y²)…`, degeneracy + drumhead surface), and
+  two non-interacting particles in 1D (same product math; a joint-vs-conditional
+  demo showing the particles are uncorrelated).
 
 Notation follows the course notes: `ϑ` polar angle, `φ` azimuthal, `ℓ` for the
 angular quantum number, Bohr radius `a`, nuclear charge `Z`. The valid quantum

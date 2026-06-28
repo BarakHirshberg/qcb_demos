@@ -16,10 +16,12 @@ eigenfunctions. Hosted free on GitHub Pages.
 
 Live: https://barakhirshberg.github.io/qcb_demos/
 
-**Status:** all four apps — **Hydrogen atom**, **Harmonic oscillator**,
-**Particle on a sphere**, **Particle on a ring** — are complete and deployed.
-(The `.soon` / `.badge-soon` CSS and the "coming soon" pattern are now unused but
-kept for any future app.)
+**Status:** all five apps — **Hydrogen atom**, **Harmonic oscillator**,
+**Particle in a box**, **Particle on a sphere**, **Particle on a ring** — are
+complete and deployed. (The `.soon` / `.badge-soon` CSS and the "coming soon"
+pattern are now unused but kept for any future app.) Nav order is kept consistent
+across every page: Home · Hydrogen · Harmonic oscillator · Particle in a box ·
+Particle on a sphere · Particle on a ring.
 
 ## Commands
 
@@ -116,6 +118,17 @@ Dimensionless units: x in √(ℏ/μω) (α = μω/ℏ = 1), E in ℏω. Uses `o
   classical probability `1/(π√(x_t²−x²))` overlaid (toggle). Notation per the
   course notes: ψ_n=N_n H_n(√α x)e^{−αx²/2}, N_n=(2ⁿn!)^{-1/2}(α/π)^{1/4},
   physicists' Hermite (shown explicitly above the plots).
+
+### Particle in a box (`box/box.js`) — one app, three modes
+
+`state.mode` ∈ {`1d`,`2d`,`2p`} drives everything; panels/controls are
+shown/hidden via `setVisibility()` (no separate pages). Units: L=1, E in h²/8mL².
+- **1d:** ψ_n=√(2/L)sin(nπx/L), E_n=n²; walls + n² ladder with ψ_n on its line, ψ/|ψ|² plots.
+- **2d:** ψ=(2/L)sin(nₓπx)sin(n_yπy), E=nₓ²+n_y²; degeneracy ladder, signed-ψ + |ψ|² heatmaps, 3-D surface.
+- **2p:** identical product math (the notes' point: 2D box ≡ two non-interacting 1D particles),
+  labels x₁/x₂, E=E₁+E₂. Extra `drawSlice()` panel: a slider "particle 1 found at x₁" with a line on
+  the joint |ψ|² and the conditional P(x₂|x₁) shown to coincide with the marginal |φ(x₂)|² for any x₁
+  ⇒ **no correlation** (the joint factorizes).
 
 ## Conventions (match the course notes — keep consistent across apps)
 
