@@ -83,10 +83,10 @@
       const r = (id, tex) => katex.render(tex, document.getElementById(id),
         { displayMode: false, throwOnError: false });
       r('eq-h', '\\psi_{n\\ell m}=R_{n\\ell}(r)\\,Y_\\ell^{\\,m}(\\vartheta,\\varphi)');
-      r('eq-o', '\\psi_n(x)=N_n H_n(x)\\,e^{-x^2/2}');
-      r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m P_\\ell^m(\\cos\\vartheta)\\,e^{im\\varphi}');
+      r('eq-o', '\\psi_n(x)=N_n\\,H_n(\\sqrt{\\alpha}\\,x)\\,e^{-\\alpha x^2/2}');
+      r('eq-s', 'Y_\\ell^{\\,m}(\\vartheta,\\varphi)=N_\\ell^m\\,P_\\ell^m(\\cos\\vartheta)\\,\\Phi_m(\\varphi)');
       r('eq-r', '\\Phi_m(\\varphi)=\\tfrac{1}{\\sqrt{2\\pi}}\\,e^{im\\varphi}');
-      r('eq-bx', '\\psi_n(x)=\\sqrt{\\tfrac{2}{L}}\\,\\sin\\tfrac{n\\pi x}{L}');
+      r('eq-bx', '\\psi_n(x)=\\sqrt{\\tfrac{2}{L}}\\,\\sin\\!\\left(\\tfrac{n\\pi x}{L}\\right)');
     });
   </script>
 </body>
