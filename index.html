@@ -12,11 +12,11 @@
   <nav class="nav">
     <span class="brand"><span class="psi">ψ</span> Quantum Visualizer</span>
     <a href="index.html" class="active">Home</a>
-    <a href="hydrogen/">Hydrogen atom</a>
-    <a href="oscillator/">Harmonic oscillator</a>
     <a href="box/">Particle in a box</a>
-    <a href="sphere/">Particle on a sphere</a>
     <a href="ring/">Particle on a ring</a>
+    <a href="oscillator/">Harmonic oscillator</a>
+    <a href="sphere/">Particle on a sphere</a>
+    <a href="hydrogen/">Hydrogen atom</a>
   </nav>
 
   <div class="wrap">
@@ -30,13 +30,20 @@
     </header>
 
     <section class="cards">
-      <a class="app-card" href="hydrogen/">
-        <span class="tag">Central potential</span>
-        <h3>Hydrogen atom</h3>
-        <div class="eq" id="eq-h"></div>
-        <p>Radial Laguerre functions <em>R<sub>nℓ</sub>(r)</em>, angular harmonics
-           <em>Y<sub>ℓ</sub><sup>m</sup></em> split into Legendre × ring parts, and the full 3D
-           orbital cloud with a complex ⇄ real-orbital toggle.</p>
+      <a class="app-card" href="box/">
+        <span class="tag">Bound states</span>
+        <h3>Particle in a box</h3>
+        <div class="eq" id="eq-bx"></div>
+        <p>The infinite square well in 1D and 2D, two non-interacting particles in 1D, and two
+           interacting particles: energy ladders with degeneracy, wavefunctions, and correlation.</p>
+      </a>
+
+      <a class="app-card" href="ring/">
+        <span class="tag">Angular momentum</span>
+        <h3>Particle on a ring</h3>
+        <div class="eq" id="eq-r"></div>
+        <p>The planar-rotor states Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π): the m² energy ladder with
+           ±m degeneracy, traveling vs standing waves, and a 3D wave around the ring.</p>
       </a>
 
       <a class="app-card" href="oscillator/">
@@ -47,14 +54,6 @@
            <em>|ψ<sub>n</sub>|²</em> and the classical probability for the quantum→classical limit.</p>
       </a>
 
-      <a class="app-card" href="box/">
-        <span class="tag">Bound states</span>
-        <h3>Particle in a box</h3>
-        <div class="eq" id="eq-bx"></div>
-        <p>The infinite square well in 1D and 2D, and two non-interacting particles in 1D:
-           energy ladders with degeneracy, wavefunctions, and a no-correlation demo.</p>
-      </a>
-
       <a class="app-card" href="sphere/">
         <span class="tag">Angular momentum</span>
         <h3>Particle on a sphere</h3>
@@ -63,12 +62,13 @@
            building blocks, and the (2<em>ℓ</em>+1)-fold degenerate energy ladder.</p>
       </a>
 
-      <a class="app-card" href="ring/">
-        <span class="tag">Angular momentum</span>
-        <h3>Particle on a ring</h3>
-        <div class="eq" id="eq-r"></div>
-        <p>The planar-rotor states Φ<sub>m</sub>(φ) = e<sup>imφ</sup>/√(2π): the m² energy ladder with
-           ±m degeneracy, traveling vs standing waves, and a 3D wave around the ring.</p>
+      <a class="app-card" href="hydrogen/">
+        <span class="tag">Central potential</span>
+        <h3>Hydrogen atom</h3>
+        <div class="eq" id="eq-h"></div>
+        <p>Radial Laguerre functions <em>R<sub>nℓ</sub>(r)</em>, angular harmonics
+           <em>Y<sub>ℓ</sub><sup>m</sup></em> split into Legendre × ring parts, and the full 3D
+           orbital cloud with a complex ⇄ real-orbital toggle.</p>
       </a>
     </section>
 

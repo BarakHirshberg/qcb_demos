@@ -20,8 +20,9 @@ Live: https://barakhirshberg.github.io/qcb_demos/
 **Particle in a box**, **Particle on a sphere**, **Particle on a ring** — are
 complete and deployed. (The `.soon` / `.badge-soon` CSS and the "coming soon"
 pattern are now unused but kept for any future app.) Nav order is kept consistent
-across every page: Home · Hydrogen · Harmonic oscillator · Particle in a box ·
-Particle on a sphere · Particle on a ring.
+across every page and follows the course's order of appearance: Home · Particle
+in a box · Particle on a ring · Harmonic oscillator · Particle on a sphere ·
+Hydrogen atom.
 
 ## Commands
 
