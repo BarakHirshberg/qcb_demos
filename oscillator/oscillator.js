@@ -3,7 +3,7 @@
 //  Dimensionless units: x in √(ℏ/μω) (so α = μω/ℏ = 1), E in ℏω.
 //  E_n = (n+½)ℏω;  ψ_n(x) = N_n H_n(√α x) e^{−αx²/2};  H_n physicists' Hermite.
 // =============================================================================
-import { oscPsi, oscClassical, hermiteCoeffs, factorial, selfTest } from '../js/special.js';
+import { oscPsi, oscNorm, oscClassical, hermiteCoeffs, selfTest } from '../js/special.js';
 import { segmented, math, layout, CONFIG, COL, fmt } from '../js/ui.js';
 
 const NMAX = 10;
@@ -22,7 +22,6 @@ function renderControls() {
     (v) => (v ? 'on' : 'off'));
 }
 function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
-function normN(n) { return Math.sqrt(1 / (Math.pow(2, n) * factorial(n))) * Math.pow(Math.PI, -0.25); }
 function turning(n) { return Math.sqrt(2 * n + 1); }   // classical turning point x_t = √(2n+1)
 
 // H_n(y) as LaTeX (integer coefficients), e.g. 8y^{3} − 12y
@@ -47,7 +46,7 @@ function renderEquations() {
   math(document.getElementById('eq-psi'),
     `\\psi_{${n}}(x)=N_{${n}}\\,H_{${n}}(\\sqrt{\\alpha}\\,x)\\,e^{-\\alpha x^2/2},\\quad \\alpha=\\mu\\omega/\\hbar`);
   document.getElementById('eq-psi-note').innerHTML =
-    `N<sub>${n}</sub> = ${fmt(normN(n))} &nbsp;(α = 1) &nbsp;·&nbsp; ` +
+    `N<sub>${n}</sub> = ${fmt(oscNorm(n))} &nbsp;(α = 1) &nbsp;·&nbsp; ` +
     `H<sub>${n}</sub>(y) = ${katex.renderToString(hermiteTex(n), { displayMode: false, throwOnError: false })} , &nbsp; y = √α x`;
   document.getElementById('psi-note').innerHTML =
     `n nodes; zero-point energy E<sub>0</sub> = ½ℏω. ψ<sub>n</sub> leaks into the classically forbidden ` +

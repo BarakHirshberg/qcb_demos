@@ -4,10 +4,14 @@
 //  only on ℓ with (2ℓ+1)-fold degeneracy. Reuses the hydrogen angular machinery.
 // =============================================================================
 import {
-  sphHarmNorm, assocLegendre, assocLegendreParts, ringPhi,
+  sphHarmNorm, assocLegendreParts,
   sphHarmComplex, realSphHarm, realOrbitalName, selfTest,
 } from '../js/special.js';
-import { segmented, math, layout, CONFIG, CONFIG_3D, COL, fmt, fracTex } from '../js/ui.js';
+import { segmented, math, layout, CONFIG, CONFIG_3D, COL, fmt } from '../js/ui.js';
+import {
+  katexInline, legendreTex, renderAngular, polarNodeAngles, azimuthalNodePlanes,
+  coneSurface, planeSurface, scene3d,
+} from '../js/angular.js';
 
 const LMAX = 6;
 const state = { l: 1, m: 0, showNodes: true };
@@ -27,7 +31,6 @@ function renderControls() {
 }
 function clampM() { if (Math.abs(state.m) > state.l) state.m = 0; }
 function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
-function katexInline(t) { return katex.renderToString(t, { displayMode: false, throwOnError: false }); }
 
 // =============================================================================
 //  Equations
@@ -52,28 +55,6 @@ function renderEquations() {
       `Angular nodes: <b>${pol}</b> polar (cones).`
     : `Real harmonic <b>${katexInline(nm)}</b> — the directional “orbital” shape (combination of m = ±${am}). ` +
       `Blue: Y&gt;0, red: Y&lt;0. Angular nodes: <b>${pol}</b> polar (cones) + <b>${azi}</b> azimuthal (planes).`;
-}
-
-// P_ℓ^m(cosϑ) = sign · sin^m ϑ · (polynomial in cos ϑ)
-function legendreTex(parts) {
-  const cosPow = (k) => (k === 0 ? '' : k === 1 ? '\\cos\\vartheta' : `\\cos^{${k}}\\vartheta`);
-  const sinPart = parts.sinPow === 0 ? '' : parts.sinPow === 1 ? '\\sin\\vartheta\\,' : `\\sin^{${parts.sinPow}}\\vartheta\\,`;
-  const nz = parts.poly.map((c, k) => ({ c, k })).filter((t) => t.c.num !== 0);
-  if (nz.length === 0) return '0';
-  if (nz.length === 1) {
-    const { c, k } = nz[0];
-    const sign = parts.sign * (c.num < 0 ? -1 : 1) < 0 ? '-' : '';
-    const mag = { num: Math.abs(c.num), den: c.den };
-    const coef = (mag.num === 1 && mag.den === 1) ? '' : fracTex(mag);
-    return `${sign}${`${coef}${sinPart}${cosPow(k)}` || '1'}`;
-  }
-  const terms = nz.map(({ c, k }, idx) => {
-    const mag = { num: Math.abs(c.num), den: c.den };
-    const coef = (mag.num === 1 && mag.den === 1 && k > 0) ? '' : fracTex(mag);
-    const sgn = c.num < 0 ? '-' : (idx ? '+' : '');
-    return `${sgn} ${coef}${cosPow(k)}`.trim();
-  });
-  return `${parts.sign < 0 ? '-' : ''}${sinPart}\\left(${terms.join(' ')}\\right)`;
 }
 
 // =============================================================================
@@ -123,75 +104,6 @@ function renderEnergy() {
 }
 
 // =============================================================================
-//  Angular plots — Θ(ϑ) amplitude/density (polar) + Θ,Φ (cartesian)
-// =============================================================================
-function thetaPolarLayout() {
-  return layout({
-    margin: { l: 30, r: 30, t: 20, b: 20 },
-    polar: {
-      bgcolor: 'rgba(0,0,0,0)',
-      radialaxis: { gridcolor: COL.grid, tickfont: { size: 9 }, angle: 90, showticklabels: false },
-      angularaxis: { gridcolor: COL.grid, rotation: 0, direction: 'counterclockwise',
-        tickmode: 'array', tickvals: [0, 90, 180, 270], ticktext: ['x', 'z', '−x', '−z'] },
-    },
-  });
-}
-
-function renderAngular() {
-  const { l, m } = state;
-  const Th = (theta) => sphHarmNorm(l, m) * assocLegendre(l, Math.abs(m), Math.cos(theta));
-
-  const Ng = 720, posR = [], posT = [], negR = [], negT = [], denR = [], denT = [];
-  for (let i = 0; i <= Ng; i++) {
-    const gamma = (i / Ng) * 2 * Math.PI;
-    const theta = gamma <= Math.PI ? gamma : 2 * Math.PI - gamma;
-    const val = Th(theta), tdeg = 90 - gamma * 180 / Math.PI;
-    if (val >= 0) { posR.push(Math.abs(val)); posT.push(tdeg); negR.push(null); negT.push(tdeg); }
-    else { negR.push(Math.abs(val)); negT.push(tdeg); posR.push(null); posT.push(tdeg); }
-    denR.push(val * val); denT.push(tdeg);
-  }
-  Plotly.react('plot-theta', [
-    { type: 'scatterpolar', r: posR, theta: posT, mode: 'lines', line: { color: COL.pos, width: 3 } },
-    { type: 'scatterpolar', r: negR, theta: negT, mode: 'lines', line: { color: COL.neg, width: 3 } },
-  ], thetaPolarLayout(), CONFIG);
-  Plotly.react('plot-theta-den', [
-    { type: 'scatterpolar', r: denR, theta: denT, mode: 'lines', fill: 'toself',
-      line: { color: COL.density, width: 2.5 }, fillcolor: 'rgba(124,92,255,0.25)' },
-  ], thetaPolarLayout(), CONFIG);
-
-  const ths = [], amp = [], den = [];
-  for (let i = 0; i <= 360; i++) { const th = (i / 360) * Math.PI, v = Th(th); ths.push(th); amp.push(v); den.push(v * v); }
-  Plotly.react('plot-theta-cart', [
-    { x: ths, y: amp, mode: 'lines', line: { color: COL.accent, width: 2.5 }, name: 'Θ(ϑ)' },
-    { x: ths, y: den, mode: 'lines', fill: 'tozeroy', line: { color: COL.density, width: 2.5 },
-      fillcolor: 'rgba(124,92,255,0.18)', name: '|Θ(ϑ)|²' },
-  ], layout({
-    showlegend: true, legend: { x: 0.5, y: 1.18, xanchor: 'center', orientation: 'h', font: { size: 10 } },
-    margin: { l: 46, r: 14, t: 30, b: 40 },
-    xaxis: { title: 'ϑ  (rad)', range: [0, Math.PI],
-      tickvals: [0, Math.PI / 4, Math.PI / 2, 3 * Math.PI / 4, Math.PI],
-      ticktext: ['0', '<i>π</i>/4', '<i>π</i>/2', '3<i>π</i>/4', '<i>π</i>'],
-      tickfont: { family: 'Georgia, "Times New Roman", serif' } },
-    yaxis: { title: 'Θ , |Θ|²', zeroline: true, zerolinecolor: COL.dim },
-  }), CONFIG);
-
-  const Np = 400, ps = [], re = [], im = [];
-  for (let i = 0; i <= Np; i++) { const p = (i / Np) * 2 * Math.PI, z = ringPhi(m, p); ps.push(p); re.push(z.re); im.push(z.im); }
-  Plotly.react('plot-phi', [
-    { x: ps, y: re, mode: 'lines', line: { color: COL.pos, width: 2.5 }, name: 'Re Φ' },
-    { x: ps, y: im, mode: 'lines', line: { color: COL.accent2, width: 2.5, dash: 'dot' }, name: 'Im Φ' },
-  ], layout({
-    showlegend: true, legend: { x: 0.5, y: 1.18, xanchor: 'center', orientation: 'h', font: { size: 10 } },
-    margin: { l: 46, r: 14, t: 30, b: 40 },
-    xaxis: { title: 'φ  (rad)', range: [0, 2 * Math.PI],
-      tickvals: [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2, 2 * Math.PI],
-      ticktext: ['0', '<i>π</i>/2', '<i>π</i>', '3<i>π</i>/2', '2<i>π</i>'],
-      tickfont: { family: 'Georgia, "Times New Roman", serif' } },
-    yaxis: { title: 'Φ<sub>m</sub>(φ)', range: [-0.46, 0.46] },
-  }), CONFIG);
-}
-
-// =============================================================================
 //  3D balloons: r(ϑ,φ) = |Y|² (complex) and |Y_real| (real, sign-colored)
 // =============================================================================
 function renderBalloons() {
@@ -230,60 +142,15 @@ function drawBalloon(divId, kind) {
   Plotly.react(divId, traces, layout({ margin: { l: 0, r: 0, t: 0, b: 0 }, scene: scene3d(L * 1.12) }), CONFIG_3D);
 }
 
-// ---- nodal surfaces (cones for polar nodes, planes for azimuthal) -----------
-function polarNodeAngles(l, m) {
-  const am = Math.abs(m), N = 1500, out = [];
-  let prev = assocLegendre(l, am, Math.cos(Math.PI / N));
-  for (let i = 2; i < N; i++) {
-    const th = (i / N) * Math.PI, cur = assocLegendre(l, am, Math.cos(th));
-    if ((prev < 0) !== (cur < 0)) out.push(th);
-    prev = cur;
-  }
-  return out;
-}
-function azimuthalNodePlanes(m) {
-  if (m === 0) return [];
-  const am = Math.abs(m), out = [];
-  for (let k = 0; k < 2 * am; k++) {
-    const phi = m > 0 ? (Math.PI / 2 + k * Math.PI) / am : (k * Math.PI) / am;
-    let p = phi % Math.PI; if (p < 0) p += Math.PI;
-    if (!out.some((q) => Math.abs(q - p) < 1e-6)) out.push(p);
-  }
-  return out;
-}
-function nodeSurface(X, Y, Z, color) {
-  return { type: 'surface', x: X, y: Y, z: Z, showscale: false, opacity: 0.18,
-    colorscale: [[0, color], [1, color]], hoverinfo: 'skip',
-    lighting: { ambient: 1, diffuse: 0, specular: 0 },
-    contours: { x: { highlight: false }, y: { highlight: false }, z: { highlight: false } } };
-}
-function coneSurface(th, L, color) {
-  const Nv = 64, st = Math.sin(th), ct = Math.cos(th), X = [], Y = [], Z = [];
-  for (const r of [0, L]) {
-    const rx = [], ry = [], rz = [];
-    for (let v = 0; v <= Nv; v++) { const ph = (2 * Math.PI * v) / Nv; rx.push(r * st * Math.cos(ph)); ry.push(r * st * Math.sin(ph)); rz.push(r * ct); }
-    X.push(rx); Y.push(ry); Z.push(rz);
-  }
-  return nodeSurface(X, Y, Z, color);
-}
-function planeSurface(ph, L, color) {
-  const cx = Math.cos(ph), sy = Math.sin(ph);
-  return nodeSurface([[-L * cx, L * cx], [-L * cx, L * cx]],
-    [[-L * sy, L * sy], [-L * sy, L * sy]], [[-L, -L], [L, L]], color);
-}
-function scene3d(L) {
-  const ax = (t) => ({ title: t, range: [-L, L], gridcolor: COL.grid, zerolinecolor: COL.grid,
-    backgroundcolor: 'rgba(0,0,0,0)', showbackground: true, color: COL.dim });
-  return { aspectmode: 'cube', xaxis: ax('x'), yaxis: ax('y'), zaxis: ax('z'),
-    camera: { eye: { x: 1.5, y: 1.5, z: 1.1 } } };
-}
+// (nodal-surface helpers — polarNodeAngles / azimuthalNodePlanes / coneSurface /
+//  planeSurface / scene3d — live in js/angular.js)
 
 // =============================================================================
 function render() {
   renderControls();
   renderEquations();
   renderEnergy();
-  renderAngular();
+  renderAngular(state.l, state.m);
   renderBalloons();
 }
 

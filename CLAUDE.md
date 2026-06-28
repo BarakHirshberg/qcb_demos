@@ -18,8 +18,7 @@ Live: https://barakhirshberg.github.io/qcb_demos/
 
 **Status:** all five apps — **Hydrogen atom**, **Harmonic oscillator**,
 **Particle in a box**, **Particle on a sphere**, **Particle on a ring** — are
-complete and deployed. (The `.soon` / `.badge-soon` CSS and the "coming soon"
-pattern are now unused but kept for any future app.) Nav order is kept consistent
+complete and deployed. Nav order is kept consistent
 across every page and follows the course's order of appearance: Home · Particle
 in a box · Particle on a ring · Harmonic oscillator · Particle on a sphere ·
 Hydrogen atom.
@@ -44,18 +43,26 @@ There is **no test runner, linter, or package.json**. The math is verified two w
 
 - **`js/special.js`** — the math core and single source of truth. Plain ES module,
   no DOM. Associated Laguerre/Legendre, Hermite, complex & real spherical
-  harmonics, radial `R_nℓ`, `oscPsi`, plus exact rational-coefficient generators
-  (`laguerreCoeffs`, `legendreCoeffs`, `assocLegendreParts`) used to render the
-  explicit polynomials in the UI. Atomic units: Bohr radius `a = 1`, `Z = 1`,
-  and ħ=m=ω=1 for the oscillator. Includes `selfTest()`.
+  harmonics, radial `R_nℓ`, `oscPsi`/`oscNorm`, plus exact rational-coefficient
+  generators (`laguerreCoeffs`, `legendreCoeffs`, `assocLegendreParts`) used to
+  render the explicit polynomials in the UI, and `eighJacobi` (small symmetric
+  eigensolver, used by the box interacting mode). Atomic units: Bohr radius
+  `a = 1`, `Z = 1`, and ħ=m=ω=1 for the oscillator. Includes `selfTest()`.
+- **`js/angular.js`** — shared angular-momentum machinery for **hydrogen and
+  sphere** (they render the identical Θ/Φ panels and 3-D nodal surfaces): `renderAngular(l,m)`
+  (the plot-theta / -den / -cart / -phi panels), `legendreTex`, `katexInline`,
+  `polarNodeAngles`, `azimuthalNodePlanes`, and the gray nodal-surface builders
+  `sphereSurface`/`coneSurface`/`planeSurface`/`nodeSurface` + `scene3d`. This is
+  the single source for that code — do **not** re-copy it into the app modules.
 - **`js/ui.js`** — shared UI helpers: `segmented()` (the button-group selectors),
   `math()` (KaTeX render), `layout()`/`CONFIG`/`CONFIG_3D` (dark Plotly theme),
   `fmt`, `fracTex`, `COL` palette.
-- **`assets/css/style.css`** — all styling; dark theme; `.grid.cols-2/3`,
-  `.card`, `.seg` selectors, `.soon` (coming-soon styling).
+- **`assets/css/style.css`** — all styling; dark theme; `.grid.cols-2`,
+  `.card`, `.seg` selectors.
 - **Per-app folder** (`hydrogen/`) — `index.html` (loads Plotly + KaTeX from CDN,
   the shared CSS, and its module script) + one JS module. Each app owns its
-  layout and rendering but imports all physics from `js/special.js`.
+  layout and rendering but imports all physics from `js/special.js` (hydrogen and
+  sphere also import the angular panels/nodes from `js/angular.js`).
 
 External deps are **CDN-only** (Plotly.js, KaTeX) — intentional, for zero-build
 longevity. Don't add npm/bundling.
@@ -87,8 +94,8 @@ longevity. Don't add npm/bundling.
 
 ### Particle on a sphere (`sphere/sphere.js`) — rigid rotor
 
-Reuses the hydrogen **angular** machinery (Θ/Φ panels, `legendreTex`, node
-helpers, all the special-function imports) — no radial part. Differences:
+Shares the **angular** machinery with hydrogen via `js/angular.js` (Θ/Φ panels,
+`legendreTex`, node helpers) — no radial part. Differences:
 - State is just `{l, m, showNodes}` (no n); controls offer ℓ and m=−ℓ…+ℓ.
 - **Energy** `renderEnergy`: free particle, no potential. Ladder `E_ℓ=ℓ(ℓ+1)`
   (units ℏ²/2I) on a schematic x-axis; levels spread *apart* with ℓ. The selected

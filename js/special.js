@@ -1,7 +1,7 @@
 // =============================================================================
 //  special.js — Special functions for the Quantum Mechanics Visualizer
 //
-//  Single source of truth for the math used by all three apps. Everything runs
+//  Single source of truth for the math used by all five apps. Everything runs
 //  in the browser as an ES module. Units: atomic units with the Bohr radius
 //  a0 = 1 and (for the oscillator) hbar = m = omega = 1, so all expressions are
 //  dimensionless and student-friendly.
@@ -11,6 +11,8 @@
 //   - Complex spherical harmonics Y_l^m = N_l^m P_l^m(cos t) e^{i m p}.
 //   - Real spherical harmonics are the usual tesseral combinations (s, p_x,
 //     p_y, p_z, d_xy, ...).
+//  Also hosts eighJacobi (a small symmetric eigensolver) and the exact
+//  rational-coefficient polynomial generators used to render formulas.
 // =============================================================================
 
 // ---- Symmetric eigensolver (cyclic Jacobi) ----------------------------------
@@ -251,10 +253,14 @@ export function realOrbitalName(l, m) {
 //  Harmonic oscillator (hbar = m = omega = 1)
 // =============================================================================
 
+//  Normalization N_n = (2^n n!)^{-1/2} (alpha/pi)^{1/4}, with alpha = 1.
+export function oscNorm(n) {
+  return Math.exp(-0.5 * (n * Math.log(2) + logFactorial(n)) - 0.25 * Math.log(Math.PI));
+}
+
 //  psi_n(x) = (2^n n!)^{-1/2} pi^{-1/4} H_n(x) e^{-x^2/2}
 export function oscPsi(n, x) {
-  const logNorm = -0.5 * (n * Math.log(2) + logFactorial(n)) - 0.25 * Math.log(Math.PI);
-  return Math.exp(logNorm) * hermite(n, x) * Math.exp(-0.5 * x * x);
+  return oscNorm(n) * hermite(n, x) * Math.exp(-0.5 * x * x);
 }
 
 //  Classical probability density for a classical oscillator with energy E_n.
